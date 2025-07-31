@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Playwright Test Suite" parallel="methods" thread-count="1">
+    
+    <listeners>
+        <listener class-name="com.starlettech.listeners.TestListener"/>
+        <listener class-name="com.starlettech.listeners.ReportPortalListener"/>
+    </listeners>
+    
+    <test name="UI Tests">
+        <classes>
+            <class name="starlettech.tests.ui.LoginTests"/>
+            <class name="starlettech.tests.ui.HomeTests"/>
+        </classes>
+    </test>
+    
+    <test name="API Tests">
+        <classes>
+            <class name="starlettech.tests.api.UserApiTests"/>
+            <class name="starlettech.tests.api.AuthApiTests"/>
+        </classes>
+    </test>
+    
+    <test name="Smoke Tests">
+        <classes>
+            <class name="starlettech.tests.ui.SmokeTests"/>
+            <class name="starlettech.tests.api.ApiSmokeTests"/>
+        </classes>
+    </test>
+    
+</suite>

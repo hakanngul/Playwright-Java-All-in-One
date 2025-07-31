@@ -1,0 +1,22 @@
+{
+  "createUser": {
+    "username": "newuser",
+    "password": "newpassword123",
+    "email": "newuser@example.com",
+    "firstName": "New",
+    "lastName": "User"
+  },
+  "updateUser": {
+    "firstName": "Updated",
+    "lastName": "User",
+    "email": "updated@example.com"
+  },
+  "loginRequest": {
+    "username": "testuser1",
+    "password": "password123"
+  },
+  "invalidLoginRequest": {
+    "username": "invaliduser",
+    "password": "wrongpassword"
+  }
+}

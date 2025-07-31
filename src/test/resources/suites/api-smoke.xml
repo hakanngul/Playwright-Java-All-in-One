@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="API Smoke Tests" parallel="methods" thread-count="2">
+    
+    <listeners>
+        <listener class-name="com.starlettech.listeners.TestListener"/>
+        <listener class-name="com.starlettech.listeners.ReportPortalListener"/>
+    </listeners>
+    
+    <test name="API Smoke Tests">
+        <groups>
+            <run>
+                <include name="smoke"/>
+                <include name="api"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="starlettech.tests.api.ApiSmokeTests"/>
+            <class name="starlettech.tests.api.AuthApiTests">
+                <methods>
+                    <include name="testLogin"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+    
+</suite>

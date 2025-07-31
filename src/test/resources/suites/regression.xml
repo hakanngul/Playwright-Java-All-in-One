@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Regression Tests" parallel="classes" thread-count="3">
+    
+    <listeners>
+        <listener class-name="com.starlettech.listeners.TestListener"/>
+        <listener class-name="com.starlettech.listeners.ReportPortalListener"/>
+    </listeners>
+    
+    <test name="UI Regression Tests">
+        <groups>
+            <run>
+                <include name="regression"/>
+                <include name="ui"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="starlettech.tests.ui.LoginTests"/>
+            <class name="starlettech.tests.ui.HomeTests"/>
+            <class name="starlettech.tests.ui.SmokeTests"/>
+        </classes>
+    </test>
+    
+    <test name="API Regression Tests">
+        <groups>
+            <run>
+                <include name="regression"/>
+                <include name="api"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="starlettech.tests.api.UserApiTests"/>
+            <class name="starlettech.tests.api.AuthApiTests"/>
+            <class name="starlettech.tests.api.ApiSmokeTests"/>
+        </classes>
+    </test>
+    
+    <test name="Hybrid Tests">
+        <groups>
+            <run>
+                <include name="hybrid"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="starlettech.tests.hybrid.UiApiIntegrationTests"/>
+        </classes>
+    </test>
+    
+</suite>
