@@ -1,0 +1,52 @@
+# Git
+.git
+.gitignore
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+
+# Build outputs
+target/
+!target/*.jar
+build/
+out/
+
+# Test outputs
+screenshots/
+videos/
+logs/
+traces/
+downloads/
+reports/
+allure-results/
+allure-reports/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Node modules (if any)
+node_modules/
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# CI/CD
+.github/
+Jenkinsfile
+scripts/
+
+# Documentation
+README.md
+docs/
+
+# Temporary files
+*.tmp
+*.temp
+*.log

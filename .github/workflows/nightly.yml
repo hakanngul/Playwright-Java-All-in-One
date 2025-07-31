@@ -1,0 +1,187 @@
+name: Nightly Regression Tests
+
+on:
+  schedule:
+    # Run every night at 1 AM UTC
+    - cron: '0 1 * * *'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Test Environment'
+        required: true
+        default: 'test'
+        type: choice
+        options:
+        - dev
+        - test
+        - staging
+      browser:
+        description: 'Browser Type'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+        - all
+        - chromium
+        - firefox
+        - webkit
+      suite:
+        description: 'Test Suite'
+        required: true
+        default: 'regression'
+        type: choice
+        options:
+        - regression
+        - smoke
+        - api
+        - ui
+
+env:
+  JAVA_VERSION: '21'
+  MAVEN_OPTS: '-Xmx4096m'
+
+jobs:
+  regression-tests:
+    name: Regression Tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        browser: ${{ github.event.inputs.browser == 'all' && fromJson('["chromium", "firefox", "webkit"]') || fromJson(format('["{0}"]', github.event.inputs.browser || 'chromium')) }}
+      fail-fast: false
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up JDK ${{ env.JAVA_VERSION }}
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ env.JAVA_VERSION }}
+        distribution: 'temurin'
+        cache: maven
+        
+    - name: Install Playwright browsers
+      run: |
+        mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install --with-deps"
+        
+    - name: Run regression tests
+      run: |
+        SUITE="${{ github.event.inputs.suite || 'regression' }}"
+        ENV="${{ github.event.inputs.environment || 'test' }}"
+        
+        if [ "$SUITE" = "regression" ]; then
+          mvn clean test -DsuiteXmlFile=src/test/resources/suites/regression.xml
+        elif [ "$SUITE" = "smoke" ]; then
+          mvn clean test -DsuiteXmlFile=src/test/resources/suites/ui-smoke.xml
+        elif [ "$SUITE" = "api" ]; then
+          mvn clean test -DsuiteXmlFile=src/test/resources/suites/api-smoke.xml
+        else
+          mvn clean test
+        fi
+      env:
+        BROWSER_TYPE: ${{ matrix.browser }}
+        ENVIRONMENT: ${{ github.event.inputs.environment || 'test' }}
+        BROWSER_HEADLESS: 'true'
+        PARALLEL_EXECUTION: 'true'
+        THREAD_COUNT: '3'
+        VIDEO_RECORDING: 'true'
+        SCREENSHOT_ON_FAILURE: 'true'
+        
+    - name: Generate comprehensive report
+      if: always()
+      run: |
+        mvn surefire-report:report-only
+        mvn site -DgenerateReports=false
+        
+        # Create summary report
+        echo "# Nightly Test Results" > test-summary.md
+        echo "**Date:** $(date)" >> test-summary.md
+        echo "**Browser:** ${{ matrix.browser }}" >> test-summary.md
+        echo "**Environment:** ${{ github.event.inputs.environment || 'test' }}" >> test-summary.md
+        echo "**Suite:** ${{ github.event.inputs.suite || 'regression' }}" >> test-summary.md
+        echo "" >> test-summary.md
+        
+        # Add test metrics if available
+        if [ -f "target/surefire-reports/TEST-*.xml" ]; then
+          TOTAL=$(grep -o 'tests="[0-9]*"' target/surefire-reports/TEST-*.xml | grep -o '[0-9]*' | awk '{sum+=$1} END {print sum}')
+          FAILURES=$(grep -o 'failures="[0-9]*"' target/surefire-reports/TEST-*.xml | grep -o '[0-9]*' | awk '{sum+=$1} END {print sum}')
+          ERRORS=$(grep -o 'errors="[0-9]*"' target/surefire-reports/TEST-*.xml | grep -o '[0-9]*' | awk '{sum+=$1} END {print sum}')
+          SKIPPED=$(grep -o 'skipped="[0-9]*"' target/surefire-reports/TEST-*.xml | grep -o '[0-9]*' | awk '{sum+=$1} END {print sum}')
+          
+          echo "**Test Results:**" >> test-summary.md
+          echo "- Total: ${TOTAL:-0}" >> test-summary.md
+          echo "- Passed: $((${TOTAL:-0} - ${FAILURES:-0} - ${ERRORS:-0} - ${SKIPPED:-0}))" >> test-summary.md
+          echo "- Failed: ${FAILURES:-0}" >> test-summary.md
+          echo "- Errors: ${ERRORS:-0}" >> test-summary.md
+          echo "- Skipped: ${SKIPPED:-0}" >> test-summary.md
+        fi
+        
+    - name: Upload test artifacts
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: nightly-results-${{ matrix.browser }}
+        path: |
+          target/surefire-reports/
+          target/site/
+          screenshots/
+          videos/
+          logs/
+          test-summary.md
+        retention-days: 30
+        
+    - name: Send email report
+      if: always()
+      uses: dawidd6/action-send-mail@v3
+      with:
+        server_address: smtp.gmail.com
+        server_port: 587
+        username: ${{ secrets.EMAIL_USERNAME }}
+        password: ${{ secrets.EMAIL_PASSWORD }}
+        subject: 'Nightly Test Results - ${{ matrix.browser }} - ${{ job.status }}'
+        body: file://test-summary.md
+        to: ${{ secrets.EMAIL_RECIPIENTS }}
+        from: 'Playwright Framework <${{ secrets.EMAIL_USERNAME }}>'
+        attachments: target/surefire-reports/emailable-report.html
+
+  performance-tests:
+    name: Performance Tests
+    runs-on: ubuntu-latest
+    needs: regression-tests
+    if: github.event.inputs.suite == 'regression' || github.event_name == 'schedule'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up JDK ${{ env.JAVA_VERSION }}
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ env.JAVA_VERSION }}
+        distribution: 'temurin'
+        cache: maven
+        
+    - name: Install Playwright browsers
+      run: |
+        mvn exec:java -e -D exec.mainClass=com.microsoft.playwright.CLI -D exec.args="install --with-deps chromium"
+        
+    - name: Run performance tests
+      run: |
+        mvn clean test \
+          -Dbrowser.type=chromium \
+          -Denvironment=${{ github.event.inputs.environment || 'test' }} \
+          -Dbrowser.headless=true \
+          -Dtest.groups=performance \
+          -Dparallel.execution=false
+      env:
+        PERFORMANCE_MONITORING: 'true'
+        
+    - name: Upload performance results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: performance-results
+        path: |
+          target/surefire-reports/
+          logs/
+        retention-days: 30

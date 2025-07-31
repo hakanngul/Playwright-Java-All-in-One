@@ -1,0 +1,136 @@
+version: '3.8'
+
+services:
+  # Main test execution service
+  playwright-tests:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: playwright-framework
+    environment:
+      - BROWSER_TYPE=${BROWSER_TYPE:-chromium}
+      - BROWSER_HEADLESS=${BROWSER_HEADLESS:-true}
+      - ENVIRONMENT=${ENVIRONMENT:-test}
+      - PARALLEL_EXECUTION=${PARALLEL_EXECUTION:-true}
+      - THREAD_COUNT=${THREAD_COUNT:-2}
+      - SCREENSHOT_ON_FAILURE=${SCREENSHOT_ON_FAILURE:-true}
+      - VIDEO_RECORDING=${VIDEO_RECORDING:-false}
+      - API_BASE_URL=${API_BASE_URL:-http://api:8080}
+      - DB_URL=${DB_URL:-jdbc:h2:mem:testdb}
+    volumes:
+      - ./screenshots:/app/screenshots
+      - ./videos:/app/videos
+      - ./logs:/app/logs
+      - ./traces:/app/traces
+      - ./downloads:/app/downloads
+      - ./target/surefire-reports:/app/reports
+    networks:
+      - test-network
+    depends_on:
+      - api
+      - database
+    command: >
+      java -jar app.jar
+      -Dbrowser.type=${BROWSER_TYPE:-chromium}
+      -Denvironment=${ENVIRONMENT:-test}
+      -Dparallel.execution=${PARALLEL_EXECUTION:-true}
+      -Dthread.count=${THREAD_COUNT:-2}
+
+  # Mock API service for testing
+  api:
+    image: mockserver/mockserver:5.15.0
+    container_name: mock-api
+    ports:
+      - "8080:1080"
+    environment:
+      - MOCKSERVER_PROPERTY_FILE=/config/mockserver.properties
+      - MOCKSERVER_INITIALIZATION_JSON_PATH=/config/expectations.json
+    volumes:
+      - ./docker/mockserver:/config
+    networks:
+      - test-network
+
+  # Test database
+  database:
+    image: postgres:15-alpine
+    container_name: test-database
+    environment:
+      - POSTGRES_DB=testdb
+      - POSTGRES_USER=testuser
+      - POSTGRES_PASSWORD=testpass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - test-network
+
+  # Selenium Grid Hub (optional)
+  selenium-hub:
+    image: selenium/hub:4.15.0
+    container_name: selenium-hub
+    ports:
+      - "4444:4444"
+      - "4442:4442"
+      - "4443:4443"
+    environment:
+      - GRID_MAX_SESSION=16
+      - GRID_BROWSER_TIMEOUT=300
+      - GRID_TIMEOUT=300
+    networks:
+      - test-network
+
+  # Chrome Node
+  chrome-node:
+    image: selenium/node-chrome:4.15.0
+    container_name: chrome-node
+    environment:
+      - HUB_HOST=selenium-hub
+      - HUB_PORT=4444
+      - NODE_MAX_INSTANCES=4
+      - NODE_MAX_SESSION=4
+    volumes:
+      - /dev/shm:/dev/shm
+    depends_on:
+      - selenium-hub
+    networks:
+      - test-network
+
+  # Firefox Node
+  firefox-node:
+    image: selenium/node-firefox:4.15.0
+    container_name: firefox-node
+    environment:
+      - HUB_HOST=selenium-hub
+      - HUB_PORT=4444
+      - NODE_MAX_INSTANCES=4
+      - NODE_MAX_SESSION=4
+    volumes:
+      - /dev/shm:/dev/shm
+    depends_on:
+      - selenium-hub
+    networks:
+      - test-network
+
+  # Test reporting service
+  allure:
+    image: frankescobar/allure-docker-service:2.24.0
+    container_name: allure-reports
+    ports:
+      - "5050:5050"
+    environment:
+      - CHECK_RESULTS_EVERY_SECONDS=3
+      - KEEP_HISTORY=20
+    volumes:
+      - ./allure-results:/app/allure-results
+      - ./allure-reports:/app/default-reports
+    networks:
+      - test-network
+
+volumes:
+  postgres_data:
+
+networks:
+  test-network:
+    driver: bridge
