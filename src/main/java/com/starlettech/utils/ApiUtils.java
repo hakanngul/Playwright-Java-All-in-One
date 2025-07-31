@@ -372,4 +372,16 @@ public class ApiUtils {
             return null;
         }
     }
+
+    /**
+     * Convert JsonNode to object
+     */
+    public static <T> T convertToObject(JsonNode jsonNode, Class<T> clazz) {
+        try {
+            return JsonUtils.fromJsonString(jsonNode.toString(), clazz);
+        } catch (Exception e) {
+            logger.error("Failed to convert JsonNode to {}: {}", clazz.getSimpleName(), e.getMessage());
+            return null;
+        }
+    }
 }
