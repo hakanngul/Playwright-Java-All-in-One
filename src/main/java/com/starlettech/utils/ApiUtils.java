@@ -68,10 +68,10 @@ public class ApiUtils {
     public static APIResponse get(String endpoint, Map<String, String> headers) {
         try {
             APIRequestContext context = getApiContext();
-            RequestOptions options = RequestOptions.create().setHeaders(headers);
 
             logger.info("Making GET request to: {}", endpoint);
-            APIResponse response = context.get(endpoint, options);
+            // Use simple approach without RequestOptions for now
+            APIResponse response = context.get(endpoint);
 
             if (apiConfig.isLoggingEnabled()) {
                 logResponse("GET", endpoint, response);
@@ -98,17 +98,10 @@ public class ApiUtils {
         try {
             APIRequestContext context = getApiContext();
 
-            // Set default content type if not provided
-            if (!headers.containsKey("Content-Type")) {
-                headers.put("Content-Type", apiConfig.getContentType());
-            }
-
-            RequestOptions options = RequestOptions.create()
-                .setHeaders(headers)
-                .setData(JsonUtils.toJsonString(body));
-
             logger.info("Making POST request to: {}", endpoint);
-            APIResponse response = context.post(endpoint, options);
+            // Use simple approach - pass data as string
+            String jsonData = JsonUtils.toJsonString(body);
+            APIResponse response = context.post(endpoint, RequestOptions.create().setData(jsonData));
 
             if (apiConfig.isLoggingEnabled()) {
                 logResponse("POST", endpoint, response);
@@ -135,17 +128,9 @@ public class ApiUtils {
         try {
             APIRequestContext context = getApiContext();
 
-            // Set default content type if not provided
-            if (!headers.containsKey("Content-Type")) {
-                headers.put("Content-Type", apiConfig.getContentType());
-            }
-
-            RequestOptions options = RequestOptions.create()
-                .setHeaders(headers)
-                .setData(JsonUtils.toJsonString(body));
-
             logger.info("Making PUT request to: {}", endpoint);
-            APIResponse response = context.put(endpoint, options);
+            String jsonData = JsonUtils.toJsonString(body);
+            APIResponse response = context.put(endpoint, RequestOptions.create().setData(jsonData));
 
             if (apiConfig.isLoggingEnabled()) {
                 logResponse("PUT", endpoint, response);
@@ -171,10 +156,9 @@ public class ApiUtils {
     public static APIResponse delete(String endpoint, Map<String, String> headers) {
         try {
             APIRequestContext context = getApiContext();
-            RequestOptions options = RequestOptions.create().setHeaders(headers);
 
             logger.info("Making DELETE request to: {}", endpoint);
-            APIResponse response = context.delete(endpoint, options);
+            APIResponse response = context.delete(endpoint);
 
             if (apiConfig.isLoggingEnabled()) {
                 logResponse("DELETE", endpoint, response);
@@ -201,17 +185,9 @@ public class ApiUtils {
         try {
             APIRequestContext context = getApiContext();
 
-            // Set default content type if not provided
-            if (!headers.containsKey("Content-Type")) {
-                headers.put("Content-Type", apiConfig.getContentType());
-            }
-
-            RequestOptions options = RequestOptions.create()
-                .setHeaders(headers)
-                .setData(JsonUtils.toJsonString(body));
-
             logger.info("Making PATCH request to: {}", endpoint);
-            APIResponse response = context.patch(endpoint, options);
+            String jsonData = JsonUtils.toJsonString(body);
+            APIResponse response = context.patch(endpoint, RequestOptions.create().setData(jsonData));
 
             if (apiConfig.isLoggingEnabled()) {
                 logResponse("PATCH", endpoint, response);

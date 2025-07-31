@@ -53,7 +53,7 @@ public class PlaywrightManager {
     }
 
     private static Browser createBrowser(Playwright playwright, BrowserType browserType) {
-        BrowserType.LaunchOptions launchOptions = new BrowserType.LaunchOptions()
+        com.microsoft.playwright.BrowserType.LaunchOptions launchOptions = new com.microsoft.playwright.BrowserType.LaunchOptions()
                 .setHeadless(browserConfig.isHeadless())
                 .setSlowMo(browserConfig.isSlowMo() ? browserConfig.getSlowMoDelay() : 0)
                 .setDevtools(browserConfig.isDevtools());

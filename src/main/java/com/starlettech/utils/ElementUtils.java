@@ -2,6 +2,7 @@ package com.starlettech.utils;
 
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
+import com.microsoft.playwright.options.BoundingBox;
 import com.microsoft.playwright.options.SelectOption;
 import com.starlettech.core.PlaywrightManager;
 import org.apache.logging.log4j.LogManager;
@@ -336,7 +337,7 @@ public class ElementUtils {
     /**
      * Get element bounding box
      */
-    public static com.microsoft.playwright.BoundingBox getElementBoundingBox(String selector) {
+    public static BoundingBox getElementBoundingBox(String selector) {
         try {
             Page page = getPage();
             return page.locator(selector).boundingBox();
