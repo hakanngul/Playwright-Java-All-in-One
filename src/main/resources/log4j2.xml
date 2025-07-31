@@ -35,10 +35,12 @@
             <DefaultRolloverStrategy max="5"/>
         </RollingFile>
 
-        <!-- ReportPortal Appender -->
+        <!-- ReportPortal Appender - Commented out until ReportPortal is properly configured -->
+        <!--
         <ReportPortalLog4j2Appender name="ReportPortalAppender">
             <PatternLayout pattern="${LOG_PATTERN}"/>
         </ReportPortalLog4j2Appender>
+        -->
     </Appenders>
 
     <Loggers>
@@ -47,7 +49,7 @@
             <AppenderRef ref="Console"/>
             <AppenderRef ref="FileAppender"/>
             <AppenderRef ref="ErrorFileAppender"/>
-            <AppenderRef ref="ReportPortalAppender"/>
+            <!-- <AppenderRef ref="ReportPortalAppender"/> -->
         </Logger>
 
         <!-- Playwright Library Logger -->

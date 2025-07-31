@@ -4,6 +4,7 @@ import com.starlettech.annotations.Browser;
 import com.starlettech.config.BrowserConfig;
 import com.starlettech.config.TestConfig;
 import com.starlettech.enums.BrowserType;
+import com.starlettech.utils.DatabaseUtils;
 import com.starlettech.utils.ScreenshotUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,6 +28,10 @@ public abstract class BaseTest {
         testConfig = TestConfig.getInstance();
         browserConfig = BrowserConfig.getInstance();
         screenshotUtils = new ScreenshotUtils();
+
+        // Initialize framework components
+        ResourceCleanupManager.initialize();
+        TestMetricsCollector.reset();
     }
 
     @BeforeClass(alwaysRun = true)
@@ -36,10 +41,21 @@ public abstract class BaseTest {
 
     @BeforeMethod(alwaysRun = true)
     public void beforeMethod(Method method) {
-        logger.info("Starting test method: {}", method.getName());
+        String testName = method.getName();
+        String className = this.getClass().getSimpleName();
+
+        logger.info("Starting test method: {}", testName);
+
+        // Set up thread-local tracking
+        ThreadLocalManager.setCurrentTestName(testName);
+        ThreadLocalManager.setTestStartTime(System.currentTimeMillis());
 
         // Get browser type from annotation or use default
         BrowserType browserType = getBrowserType(method);
+        String environment = testConfig.getEnvironment().name();
+
+        // Record test start in metrics
+        TestMetricsCollector.recordTestStart(testName, className, browserType.name(), environment);
 
         // Initialize Playwright and create browser
         PlaywrightManager.initializePlaywright();
@@ -47,27 +63,50 @@ public abstract class BaseTest {
         PlaywrightManager.createContext();
         PlaywrightManager.createPage();
 
-        logger.info("Test setup completed for method: {}", method.getName());
+        // Store resources in ThreadLocalManager
+        ThreadLocalManager.setPlaywright(PlaywrightManager.getPlaywright());
+        ThreadLocalManager.setBrowser(PlaywrightManager.getBrowser());
+        ThreadLocalManager.setContext(PlaywrightManager.getContext());
+        ThreadLocalManager.setPage(PlaywrightManager.getPage());
+
+        logger.info("Test setup completed for method: {}", testName);
     }
 
     @AfterMethod(alwaysRun = true)
     public void afterMethod(ITestResult result) {
         String methodName = result.getMethod().getMethodName();
+        String className = this.getClass().getSimpleName();
+        long executionTime = ThreadLocalManager.getTestDuration();
 
+        // Determine test result
+        TestMetricsCollector.TestResult testResult;
         if (result.getStatus() == ITestResult.FAILURE) {
+            testResult = TestMetricsCollector.TestResult.FAILED;
             logger.error("Test method failed: {}", methodName);
             if (testConfig.isScreenshotOnFailure()) {
                 screenshotUtils.takeScreenshot(methodName + "_failure");
             }
         } else if (result.getStatus() == ITestResult.SUCCESS) {
+            testResult = TestMetricsCollector.TestResult.PASSED;
             logger.info("Test method passed: {}", methodName);
-        } else if (result.getStatus() == ITestResult.SKIP) {
+        } else {
+            testResult = TestMetricsCollector.TestResult.SKIPPED;
             logger.warn("Test method skipped: {}", methodName);
         }
 
-        // Cleanup Playwright resources
-        PlaywrightManager.cleanup();
-        logger.info("Test cleanup completed for method: {}", methodName);
+        // Record test completion in metrics
+        TestMetricsCollector.recordTestCompletion(methodName, className, testResult, executionTime, result.getThrowable());
+
+        // Check if this was a retry
+        if (RetryAnalyzer.getCurrentRetryCount() > 0) {
+            TestMetricsCollector.recordTestRetry(methodName, className);
+        }
+
+        // Cleanup resources
+        ThreadLocalManager.cleanupCurrentThread();
+        DynamicConfigManager.cleanup();
+
+        logger.info("Test cleanup completed for method: {} (Duration: {}ms)", methodName, executionTime);
     }
 
     @AfterClass(alwaysRun = true)
@@ -78,6 +117,13 @@ public abstract class BaseTest {
     @AfterSuite(alwaysRun = true)
     public void afterSuite() {
         logger.info("Completed test suite execution");
+
+        // Print test metrics summary
+        TestMetricsCollector.printSummary();
+
+        // Cleanup framework resources
+        ResourceCleanupManager.shutdown();
+        DatabaseUtils.closeAllConnections();
     }
 
     /**

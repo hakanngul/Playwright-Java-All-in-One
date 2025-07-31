@@ -12,6 +12,9 @@ target/
 *.iml
 *.ipr
 
+
+AugmentWebviewStateStore.xml
+
 ### Eclipse ###
 .apt_generated
 .classpath

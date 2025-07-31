@@ -1,5 +1,6 @@
 package com.starlettech.listeners;
 
+import com.starlettech.core.RetryAnalyzer;
 import com.starlettech.utils.ScreenshotUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,9 +20,15 @@ public class TestListener implements ITestListener {
 
     @Override
     public void onTestStart(ITestResult result) {
-        logger.info("Test started: {}.{}",
-            result.getTestClass().getName(),
-            result.getMethod().getMethodName());
+        String testName = result.getMethod().getMethodName();
+        String className = result.getTestClass().getName();
+        int retryCount = RetryAnalyzer.getCurrentRetryCount();
+
+        if (retryCount > 0) {
+            logger.info("Test retry started: {}.{} (Retry #{}) ", className, testName, retryCount);
+        } else {
+            logger.info("Test started: {}.{}", className, testName);
+        }
     }
 
     @Override
