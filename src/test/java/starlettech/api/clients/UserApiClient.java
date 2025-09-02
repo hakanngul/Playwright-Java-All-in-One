@@ -30,7 +30,8 @@ public class UserApiClient {
         if (ApiUtils.isSuccessStatusCode(response)) {
             JsonNode jsonResponse = ApiUtils.getResponseBodyAsJson(response);
             List<User> users = new java.util.ArrayList<>();
-            
+
+            assert jsonResponse != null;
             if (jsonResponse.isArray()) {
                 for (JsonNode userNode : jsonResponse) {
                     User user = ApiUtils.convertToObject(userNode, User.class);

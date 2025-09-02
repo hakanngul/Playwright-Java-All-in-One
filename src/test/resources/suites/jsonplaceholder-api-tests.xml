@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<suite name="JSONPlaceholder API Test Suite" parallel="methods" thread-count="3" verbose="1">
+    
+    <listeners>
+        <listener class-name="com.starlettech.listeners.TestListener"/>
+        <listener class-name="com.starlettech.listeners.ReportPortalListener"/>
+        <listener class-name="com.starlettech.listeners.ScreenshotListener"/>
+    </listeners>
+    
+    <test name="JSONPlaceholder Smoke Tests" preserve-order="false">
+        <groups>
+            <run>
+                <include name="smoke"/>
+                <include name="api"/>
+                <include name="jsonplaceholder"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="starlettech.tests.api.JsonPlaceholderApiTests">
+                <methods>
+                    <include name="testGetAllPosts"/>
+                    <include name="testGetPostById_ValidId"/>
+                    <include name="testGetAllComments"/>
+                    <include name="testGetAllAlbums"/>
+                    <include name="testGetAllPhotos"/>
+                    <include name="testGetAllTodos"/>
+                    <include name="testGetAllUsers"/>
+                    <include name="testGetUserById_ValidId"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+    
+    <test name="JSONPlaceholder Regression Tests" preserve-order="false">
+        <groups>
+            <run>
+                <include name="regression"/>
+                <include name="api"/>
+                <include name="jsonplaceholder"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="starlettech.tests.api.JsonPlaceholderApiTests">
+                <methods>
+                    <include name="testGetPostsByUserId"/>
+                    <include name="testCreatePost"/>
+                    <include name="testUpdatePost"/>
+                    <include name="testPatchPost"/>
+                    <include name="testDeletePost"/>
+                    <include name="testGetCommentsByPostId"/>
+                    <include name="testGetCommentsForPost_NestedEndpoint"/>
+                    <include name="testCreateComment"/>
+                    <include name="testGetAlbumsByUserId"/>
+                    <include name="testGetPhotosByAlbumId"/>
+                    <include name="testCreatePhoto"/>
+                    <include name="testGetCompletedTodos"/>
+                    <include name="testGetPendingTodos"/>
+                    <include name="testCreateTodo"/>
+                    <include name="testMarkTodoAsCompleted"/>
+                    <include name="testCreateUser"/>
+                    <include name="testSearchUsersByUsername"/>
+                    <include name="testSearchUsersByCity"/>
+                    <include name="testPostsPagination"/>
+                    <include name="testSearchPostsByTitle"/>
+                    <include name="testSearchCommentsByEmailDomain"/>
+                    <include name="testDataConsistency_PostsAndComments"/>
+                    <include name="testDataConsistency_UserRelatedData"/>
+                    <include name="testCompleteCrudWorkflow_Posts"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+    
+    <test name="JSONPlaceholder Negative Tests" preserve-order="false">
+        <groups>
+            <run>
+                <include name="negative"/>
+                <include name="api"/>
+                <include name="jsonplaceholder"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="starlettech.tests.api.JsonPlaceholderApiTests">
+                <methods>
+                    <include name="testGetPostById_InvalidId"/>
+                    <include name="testDeletePost_InvalidId"/>
+                    <include name="testCreatePost_InvalidData"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+    
+    <test name="JSONPlaceholder Boundary Tests" preserve-order="false">
+        <groups>
+            <run>
+                <include name="boundary"/>
+                <include name="api"/>
+                <include name="jsonplaceholder"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="starlettech.tests.api.JsonPlaceholderApiTests">
+                <methods>
+                    <include name="testBoundaryValues_PostIds"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+    
+    <test name="JSONPlaceholder Performance Tests" preserve-order="false">
+        <groups>
+            <run>
+                <include name="performance"/>
+                <include name="api"/>
+                <include name="jsonplaceholder"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="starlettech.tests.api.JsonPlaceholderApiTests">
+                <methods>
+                    <include name="testApiResponseTime"/>
+                    <include name="testConcurrentApiCalls"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+    
+    <test name="JSONPlaceholder Integration Tests" preserve-order="false">
+        <groups>
+            <run>
+                <include name="integration"/>
+                <include name="api"/>
+                <include name="jsonplaceholder"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="starlettech.tests.api.JsonPlaceholderApiTests">
+                <methods>
+                    <include name="testUserEcosystemIntegration"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+    
+    <test name="JSONPlaceholder Data Integrity Tests" preserve-order="false">
+        <groups>
+            <run>
+                <include name="integrity"/>
+                <include name="api"/>
+                <include name="jsonplaceholder"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="starlettech.tests.api.JsonPlaceholderApiTests">
+                <methods>
+                    <include name="testDataConsistency_PostsAndComments"/>
+                    <include name="testDataConsistency_UserRelatedData"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+    
+    <test name="JSONPlaceholder Workflow Tests" preserve-order="false">
+        <groups>
+            <run>
+                <include name="workflow"/>
+                <include name="api"/>
+                <include name="jsonplaceholder"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="starlettech.tests.api.JsonPlaceholderApiTests">
+                <methods>
+                    <include name="testCompleteCrudWorkflow_Posts"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+    
+</suite>

@@ -5,6 +5,7 @@ import com.epam.reportportal.service.ReportPortal;
 import com.epam.reportportal.service.tree.TestItemTree;
 import com.epam.reportportal.testng.ReportPortalTestNGListener;
 import com.starlettech.annotations.TestInfo;
+import com.starlettech.annotations.ApiTest;
 import com.starlettech.config.ReportPortalConfig;
 import com.starlettech.utils.ScreenshotUtils;
 import org.apache.logging.log4j.LogManager;
@@ -51,6 +52,14 @@ public class ReportPortalListener extends ReportPortalTestNGListener {
                     if (testInfo.tags().length > 0) {
                         ReportPortal.emitLog("Tags: " + String.join(", ", testInfo.tags()), "INFO", Calendar.getInstance().getTime());
                     }
+                }
+
+                // Add API test information from annotation
+                ApiTest apiTest = result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(ApiTest.class);
+                if (apiTest != null) {
+                    ReportPortal.emitLog("API Endpoint: " + apiTest.endpoint(), "INFO", Calendar.getInstance().getTime());
+                    ReportPortal.emitLog("HTTP Method: " + apiTest.method(), "INFO", Calendar.getInstance().getTime());
+                    ReportPortal.emitLog("Requires Auth: " + apiTest.requiresAuth(), "INFO", Calendar.getInstance().getTime());
                 }
 
                 // Log test start time

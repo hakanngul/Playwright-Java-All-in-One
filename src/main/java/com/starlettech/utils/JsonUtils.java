@@ -1,6 +1,8 @@
 package com.starlettech.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -12,7 +14,9 @@ import org.apache.logging.log4j.Logger;
  */
 public class JsonUtils {
     private static final Logger logger = LogManager.getLogger(JsonUtils.class);
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper()
+            // Ekstra alanlar yüzünden parse patlamasın:
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     /**
      * Convert object to JSON string
@@ -29,7 +33,7 @@ public class JsonUtils {
     }
 
     /**
-     * Convert JSON string to object
+     * Convert JSON string to object by Class<T>
      */
     public static <T> T fromJsonString(String json, Class<T> clazz) {
         try {
@@ -38,6 +42,21 @@ public class JsonUtils {
             return object;
         } catch (JsonProcessingException e) {
             logger.error("Failed to convert JSON to object: {}", e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Convert JSON string to object by TypeReference<T>
+     * Örn: fromJsonString(json, new TypeReference<List<PostDto>>() {})
+     */
+    public static <T> T fromJsonString(String json, TypeReference<T> typeRef) {
+        try {
+            T object = objectMapper.readValue(json, typeRef);
+            logger.debug("Converted JSON to object via TypeReference");
+            return object;
+        } catch (JsonProcessingException e) {
+            logger.error("Failed to convert JSON to TypeReference: {}", e.getMessage());
             return null;
         }
     }
@@ -57,7 +76,7 @@ public class JsonUtils {
     }
 
     /**
-     * Convert JsonNode to object
+     * Convert JsonNode to object by Class<T>
      */
     public static <T> T convertToObject(JsonNode jsonNode, Class<T> clazz) {
         try {
@@ -71,7 +90,22 @@ public class JsonUtils {
     }
 
     /**
-     * Get value from JsonNode by path
+     * Convert JsonNode to object by TypeReference<T>
+     * Örn: convertToObject(node, new TypeReference<List<PostDto>>() {})
+     */
+    public static <T> T convertToObject(JsonNode jsonNode, TypeReference<T> typeRef) {
+        try {
+            T object = objectMapper.convertValue(jsonNode, typeRef);
+            logger.debug("Converted JsonNode to object via TypeReference");
+            return object;
+        } catch (IllegalArgumentException e) {
+            logger.error("Failed to convert JsonNode to TypeReference: {}", e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Get value from JsonNode by path (dot notation)
      */
     public static String getValueByPath(JsonNode jsonNode, String path) {
         try {
@@ -79,15 +113,14 @@ public class JsonUtils {
             JsonNode currentNode = jsonNode;
 
             for (String part : pathParts) {
-                if (currentNode.has(part)) {
+                if (currentNode != null && currentNode.has(part)) {
                     currentNode = currentNode.get(part);
                 } else {
                     logger.warn("Path not found in JSON: {}", path);
                     return null;
                 }
             }
-
-            return currentNode.asText();
+            return currentNode != null ? currentNode.asText() : null;
         } catch (Exception e) {
             logger.error("Failed to get value by path {}: {}", path, e.getMessage());
             return null;
@@ -95,7 +128,7 @@ public class JsonUtils {
     }
 
     /**
-     * Update JsonNode with new value
+     * Update JsonNode with new value (dot notation)
      */
     public static JsonNode updateJsonNode(JsonNode jsonNode, String path, String newValue) {
         try {
@@ -104,7 +137,7 @@ public class JsonUtils {
 
             // Navigate to parent node
             for (int i = 0; i < pathParts.length - 1; i++) {
-                if (currentNode.has(pathParts[i])) {
+                if (currentNode != null && currentNode.has(pathParts[i])) {
                     currentNode = currentNode.get(pathParts[i]);
                 } else {
                     logger.warn("Path not found in JSON: {}", path);
@@ -126,7 +159,7 @@ public class JsonUtils {
     }
 
     /**
-     * Pretty print JSON
+     * Pretty print JSON (Object veya JSON string)
      */
     public static String prettyPrint(Object object) {
         try {
@@ -152,14 +185,12 @@ public class JsonUtils {
     }
 
     /**
-     * Merge two JSON objects
+     * Merge two JSON objects (shallow)
      */
     public static JsonNode mergeJson(JsonNode mainNode, JsonNode updateNode) {
         try {
             ObjectNode merged = mainNode.deepCopy();
-            updateNode.fields().forEachRemaining(entry -> {
-                merged.set(entry.getKey(), entry.getValue());
-            });
+            updateNode.fields().forEachRemaining(entry -> merged.set(entry.getKey(), entry.getValue()));
             logger.debug("Merged JSON objects");
             return merged;
         } catch (Exception e) {
