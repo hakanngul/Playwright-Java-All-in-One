@@ -1,18 +1,17 @@
 package starlettech.tests.api;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.microsoft.playwright.APIResponse;
-import com.starlettech.annotations.ApiTest;
-import com.starlettech.annotations.TestInfo;
-import com.starlettech.core.BaseApiTest;
-import com.starlettech.utils.ApiUtils;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.starlettech.annotations.ApiTest;
+import com.starlettech.annotations.TestInfo;
+import com.starlettech.core.BaseApiTest;
+
 import starlettech.api.clients.AuthApiClient;
 import starlettech.api.models.AuthResponse;
-import starlettech.api.models.ErrorResponse;
 import starlettech.api.models.User;
 
 /**

@@ -1,0 +1,58 @@
+version: '3.8'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
+    environment:
+      - "discovery.type=single-node"
+      - "bootstrap.memory_lock=true"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - elasticsearch:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+    restart: always
+
+  postgres:
+    image: postgres:12-alpine
+    environment:
+      POSTGRES_USER: rpuser
+      POSTGRES_PASSWORD: rppass
+      POSTGRES_DB: reportportal
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432" 
+    restart: always
+
+  reportportal:
+    image: reportportal/service-api:5.7.2
+    environment:
+      - RP_DB_HOST=postgres
+      - RP_DB_USER=rpuser
+      - RP_DB_PASS=rppass
+      - RP_DB_NAME=reportportal
+      - RP_ELASTICSEARCH_HOST=http://elasticsearch:9200
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - elasticsearch
+    restart: always
+
+  reportportal-ui:
+    image: reportportal/service-ui:5.7.2
+    environment:
+      - RP_SERVER_PORT=8080
+    ports:
+      - "8081:8080"
+    depends_on:
+      - reportportal
+    restart: always
+
+volumes:
+  elasticsearch:
+  postgres:
