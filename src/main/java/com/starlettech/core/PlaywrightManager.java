@@ -1,13 +1,18 @@
 package com.starlettech.core;
 
-import com.microsoft.playwright.*;
-import com.starlettech.config.BrowserConfig;
-import com.starlettech.enums.BrowserType;
+import java.nio.file.Paths;
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.nio.file.Paths;
-import java.util.List;
+import com.microsoft.playwright.Browser;
+import com.microsoft.playwright.BrowserContext;
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.Playwright;
+import com.microsoft.playwright.Tracing;
+import com.starlettech.config.BrowserConfig;
+import com.starlettech.enums.BrowserType;
 
 /**
  * Playwright Manager for handling browser instances and pages
@@ -53,6 +58,7 @@ public class PlaywrightManager {
     }
 
     private static Browser createBrowser(Playwright playwright, BrowserType browserType) {
+        @SuppressWarnings("deprecation")
         com.microsoft.playwright.BrowserType.LaunchOptions launchOptions = new com.microsoft.playwright.BrowserType.LaunchOptions()
                 .setHeadless(browserConfig.isHeadless())
                 .setSlowMo(browserConfig.isSlowMo() ? browserConfig.getSlowMoDelay() : 0)

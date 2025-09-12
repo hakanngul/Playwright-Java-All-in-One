@@ -1,11 +1,13 @@
 package com.starlettech.config;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.starlettech.exceptions.ConfigurationException;
 
 /**
  * ReportPortal Configuration class for managing ReportPortal settings
@@ -41,6 +43,7 @@ public class ReportPortalConfig {
             }
         } catch (IOException e) {
             logger.error("Error loading ReportPortal configuration: {}", e.getMessage());
+            throw ConfigurationException.loadError("reportportal.properties", e);
         }
     }
 

@@ -1,12 +1,15 @@
 package com.starlettech.core;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.WaitForSelectorState;
 import com.starlettech.config.TestConfig;
+import com.starlettech.exceptions.BrowserException;
+import com.starlettech.exceptions.PageException;
 import com.starlettech.utils.WaitUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Base Page class containing common page operations
@@ -23,7 +26,7 @@ public abstract class BasePage {
         this.waitUtils = new WaitUtils(page);
 
         if (this.page == null) {
-            throw new RuntimeException("Page is not initialized. Make sure to call PlaywrightManager.createPage() first.");
+            throw BrowserException.pageNotInitialized();
         }
     }
 
@@ -32,8 +35,12 @@ public abstract class BasePage {
      */
     public void navigateTo(String url) {
         logger.info("Navigating to: {}", url);
-        page.navigate(url);
-        waitForPageLoad();
+        try {
+            page.navigate(url);
+            waitForPageLoad();
+        } catch (Exception e) {
+            throw PageException.navigationFailed(url);
+        }
     }
 
     /**
@@ -63,8 +70,12 @@ public abstract class BasePage {
      */
     public void click(String selector) {
         logger.debug("Clicking element: {}", selector);
-        waitForElement(selector);
-        page.click(selector);
+        try {
+            waitForElement(selector);
+            page.click(selector);
+        } catch (Exception e) {
+            throw PageException.clickFailed(selector, e);
+        }
     }
 
     /**
@@ -81,8 +92,12 @@ public abstract class BasePage {
      */
     public void type(String selector, String text) {
         logger.debug("Typing '{}' into element: {}", text, selector);
-        waitForElement(selector);
-        page.fill(selector, text);
+        try {
+            waitForElement(selector);
+            page.fill(selector, text);
+        } catch (Exception e) {
+            throw PageException.typeFailed(selector, e);
+        }
     }
 
     /**

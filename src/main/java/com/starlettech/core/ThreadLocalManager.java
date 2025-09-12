@@ -19,19 +19,19 @@ import com.microsoft.playwright.Playwright;
  */
 public class ThreadLocalManager {
     private static final Logger logger = LogManager.getLogger(ThreadLocalManager.class);
-    
+
     // Playwright resources
     private static final ThreadLocal<Playwright> playwrightThreadLocal = new ThreadLocal<>();
     private static final ThreadLocal<Browser> browserThreadLocal = new ThreadLocal<>();
     private static final ThreadLocal<BrowserContext> contextThreadLocal = new ThreadLocal<>();
     private static final ThreadLocal<Page> pageThreadLocal = new ThreadLocal<>();
     private static final ThreadLocal<APIRequestContext> apiContextThreadLocal = new ThreadLocal<>();
-    
+
     // Test data and configuration
     private static final ThreadLocal<Map<String, Object>> testDataThreadLocal = new ThreadLocal<>();
     private static final ThreadLocal<String> currentTestNameThreadLocal = new ThreadLocal<>();
     private static final ThreadLocal<Long> testStartTimeThreadLocal = new ThreadLocal<>();
-    
+
     // Thread tracking for cleanup
     private static final Map<Long, String> activeThreads = new ConcurrentHashMap<>();
 
@@ -95,8 +95,9 @@ public class ThreadLocalManager {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> T getTestData(String key) {
-        return (T) Optional.ofNullable(ThreadLocalManager.getTestData(key));
+    public static <T> Optional<T> getTestData(String key) {
+        return Optional.ofNullable(testDataThreadLocal.get())
+                .map(data -> (T) data.get(key));
     }
 
     public static void removeTestData(String key) {
@@ -157,7 +158,7 @@ public class ThreadLocalManager {
     public static void cleanupCurrentThread() {
         long threadId = Thread.currentThread().getId();
         String threadName = Thread.currentThread().getName();
-        
+
         logger.debug("Cleaning up resources for thread: {} ({})", threadId, threadName);
 
         // Close Playwright resources
@@ -229,22 +230,22 @@ public class ThreadLocalManager {
 
     public static void cleanupAllThreads() {
         logger.info("Starting cleanup for all active threads. Active threads: {}", activeThreads.size());
-        
+
         for (Long threadId : activeThreads.keySet()) {
             logger.debug("Force cleanup for thread: {}", threadId);
         }
-        
+
         // Clear all tracking
         activeThreads.clear();
-        
+
         logger.info("All threads cleanup completed");
     }
 
     // ========== Utility Methods ==========
 
     public static boolean hasActiveResources() {
-        return getPlaywright() != null || getBrowser() != null || 
-               getContext() != null || getPage() != null || getApiContext() != null;
+        return getPlaywright() != null || getBrowser() != null ||
+                getContext() != null || getPage() != null || getApiContext() != null;
     }
 
     public static String getThreadInfo() {
@@ -252,8 +253,8 @@ public class ThreadLocalManager {
         String threadName = Thread.currentThread().getName();
         String testName = getCurrentTestName();
         long duration = getTestDuration();
-        
-        return String.format("Thread[%d:%s] Test[%s] Duration[%dms]", 
-            threadId, threadName, testName != null ? testName : "N/A", duration);
+
+        return String.format("Thread[%d:%s] Test[%s] Duration[%dms]",
+                threadId, threadName, testName != null ? testName : "N/A", duration);
     }
 }
