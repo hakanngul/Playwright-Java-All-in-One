@@ -1,4 +1,4 @@
-package com.starlettech.pages.saucedemo;
+package com.starlettech.testdata.pages.saucedemo;
 
 import com.starlettech.annotations.Browser;
 import com.starlettech.core.BasePage;

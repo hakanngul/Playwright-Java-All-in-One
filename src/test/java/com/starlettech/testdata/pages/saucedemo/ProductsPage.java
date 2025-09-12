@@ -1,4 +1,4 @@
-package com.starlettech.pages.saucedemo;
+package com.starlettech.testdata.pages.saucedemo;
 
 import java.util.List;
 

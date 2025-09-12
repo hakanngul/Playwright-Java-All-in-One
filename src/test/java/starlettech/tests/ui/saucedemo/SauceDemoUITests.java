@@ -10,9 +10,9 @@ import com.starlettech.annotations.Browser;
 import com.starlettech.annotations.TestInfo;
 import com.starlettech.core.BaseTest;
 import com.starlettech.enums.BrowserType;
-import com.starlettech.pages.saucedemo.CartPage;
-import com.starlettech.pages.saucedemo.LoginPage;
-import com.starlettech.pages.saucedemo.ProductsPage;
+import com.starlettech.testdata.pages.saucedemo.CartPage;
+import com.starlettech.testdata.pages.saucedemo.LoginPage;
+import com.starlettech.testdata.pages.saucedemo.ProductsPage;
 import com.starlettech.testdata.saucedemo.SauceDemoTestData;
 
 /**

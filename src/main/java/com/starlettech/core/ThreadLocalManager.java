@@ -1,12 +1,18 @@
 package com.starlettech.core;
 
-import com.microsoft.playwright.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import com.microsoft.playwright.APIRequestContext;
+import com.microsoft.playwright.Browser;
+import com.microsoft.playwright.BrowserContext;
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.Playwright;
 
 /**
  * Thread-safe manager for Playwright resources and test data
@@ -90,11 +96,7 @@ public class ThreadLocalManager {
 
     @SuppressWarnings("unchecked")
     public static <T> T getTestData(String key) {
-        Map<String, Object> testData = testDataThreadLocal.get();
-        if (testData != null) {
-            return (T) testData.get(key);
-        }
-        return null;
+        return (T) Optional.ofNullable(ThreadLocalManager.getTestData(key));
     }
 
     public static void removeTestData(String key) {
