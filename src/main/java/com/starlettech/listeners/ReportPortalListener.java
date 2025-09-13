@@ -304,4 +304,69 @@ public class ReportPortalListener extends ReportPortalTestNGListener {
             logger.error("Failed to attach file to ReportPortal: {}", e.getMessage());
         }
     }
+
+    /**
+     * Check if the test result is from a configuration method (BeforeMethod, AfterMethod, etc.)
+     */
+    private boolean isConfigurationMethod(ITestResult result) {
+        // Get method name and check if it's a configuration method
+        String methodName = result.getMethod().getMethodName();
+        
+        // Check if method has TestNG configuration annotations
+        java.lang.reflect.Method method = result.getMethod().getConstructorOrMethod().getMethod();
+        if (method != null) {
+            boolean hasConfigAnnotation = method.isAnnotationPresent(org.testng.annotations.BeforeMethod.class) ||
+                   method.isAnnotationPresent(org.testng.annotations.AfterMethod.class) ||
+                   method.isAnnotationPresent(org.testng.annotations.BeforeClass.class) ||
+                   method.isAnnotationPresent(org.testng.annotations.AfterClass.class) ||
+                   method.isAnnotationPresent(org.testng.annotations.BeforeTest.class) ||
+                   method.isAnnotationPresent(org.testng.annotations.AfterTest.class) ||
+                   method.isAnnotationPresent(org.testng.annotations.BeforeSuite.class) ||
+                   method.isAnnotationPresent(org.testng.annotations.AfterSuite.class) ||
+                   method.isAnnotationPresent(org.testng.annotations.BeforeGroups.class) ||
+                   method.isAnnotationPresent(org.testng.annotations.AfterGroups.class);
+            
+            if (hasConfigAnnotation) {
+                logger.debug("Skipping configuration method: {} for ReportPortal", methodName);
+                return true;
+            }
+        }
+        
+        // Additional check: TestNG method type
+        if (result.getMethod().isBeforeMethodConfiguration() ||
+            result.getMethod().isAfterMethodConfiguration() ||
+            result.getMethod().isBeforeClassConfiguration() ||
+            result.getMethod().isAfterClassConfiguration() ||
+            result.getMethod().isBeforeTestConfiguration() ||
+            result.getMethod().isAfterTestConfiguration() ||
+            result.getMethod().isBeforeSuiteConfiguration() ||
+            result.getMethod().isAfterSuiteConfiguration() ||
+            result.getMethod().isBeforeGroupsConfiguration() ||
+            result.getMethod().isAfterGroupsConfiguration()) {
+            logger.debug("Skipping TestNG configuration method: {} for ReportPortal", methodName);
+            return true;
+        }
+        
+        // Fallback: check by method name patterns (common configuration method names)
+        boolean isConfigByName = methodName.startsWith("before") || 
+               methodName.startsWith("after") || 
+               methodName.equals("setUp") || 
+               methodName.equals("tearDown") ||
+               methodName.startsWith("setup") ||
+               methodName.startsWith("cleanup") ||
+               methodName.equals("beforeClass") ||
+               methodName.equals("afterClass") ||
+               methodName.equals("beforeMethod") ||
+               methodName.equals("afterMethod") ||
+               methodName.equals("beforeSuite") ||
+               methodName.equals("afterSuite");
+               
+        if (isConfigByName) {
+            logger.debug("Skipping configuration method by name: {} for ReportPortal", methodName);
+            return true;
+        }
+        
+        return false;
+    }
+
 }
