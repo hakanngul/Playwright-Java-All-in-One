@@ -1,20 +1,26 @@
 package com.starlettech.validator;
 
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Objects;
+
+import org.testng.Assert;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.playwright.APIResponse;
 import com.microsoft.playwright.Page;
 import com.starlettech.core.PlaywrightManager;
 import com.starlettech.utils.ElementUtils;
-import org.testng.Assert;
-
-import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeParseException;
-import java.util.*;
 
 /**
  * Assertions
@@ -380,7 +386,7 @@ public final class Assertions {
     private static JsonNode rootJson(APIResponse response) {
         try {
             return MAPPER.readTree(bodyTextSafe(response));
-        } catch (Throwable t) {
+        } catch (JsonProcessingException t) {
             return null;
         }
     }

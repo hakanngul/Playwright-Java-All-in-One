@@ -140,7 +140,7 @@ public class ThreadLocalManager {
     // ========== Thread Tracking ==========
 
     private static void trackThread(String resource) {
-        long threadId = Thread.currentThread().getId();
+        long threadId = Thread.currentThread().threadId();
         String threadName = Thread.currentThread().getName();
         activeThreads.put(threadId, threadName + " (" + resource + ")");
     }
@@ -156,7 +156,7 @@ public class ThreadLocalManager {
     // ========== Resource Cleanup ==========
 
     public static void cleanupCurrentThread() {
-        long threadId = Thread.currentThread().getId();
+        long threadId = Thread.currentThread().threadId();
         String threadName = Thread.currentThread().getName();
 
         logger.debug("Cleaning up resources for thread: {} ({})", threadId, threadName);
@@ -249,7 +249,7 @@ public class ThreadLocalManager {
     }
 
     public static String getThreadInfo() {
-        long threadId = Thread.currentThread().getId();
+        long threadId = Thread.currentThread().threadId();
         String threadName = Thread.currentThread().getName();
         String testName = getCurrentTestName();
         long duration = getTestDuration();
