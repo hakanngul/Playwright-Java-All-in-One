@@ -1,21 +1,20 @@
 package com.starlettech.listeners;
 
-import com.epam.reportportal.listeners.ListenerParameters;
-import com.epam.reportportal.service.ReportPortal;
-import com.epam.reportportal.service.tree.TestItemTree;
-import com.epam.reportportal.testng.ReportPortalTestNGListener;
-import com.starlettech.annotations.TestInfo;
-import com.starlettech.annotations.ApiTest;
-import com.starlettech.config.ReportPortalConfig;
-import com.starlettech.utils.ScreenshotUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.testng.ITestResult;
-
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.testng.ITestResult;
+
+import com.epam.reportportal.service.ReportPortal;
+import com.epam.reportportal.testng.ReportPortalTestNGListener;
+import com.starlettech.annotations.ApiTest;
+import com.starlettech.annotations.TestInfo;
+import com.starlettech.config.ReportPortalConfig;
+import com.starlettech.utils.ScreenshotUtils;
 
 /**
  * ReportPortal Listener for enhanced reporting integration
@@ -43,7 +42,7 @@ public class ReportPortalListener extends ReportPortalTestNGListener {
                 if (testInfo != null) {
                     ReportPortal.emitLog("Test Description: " + testInfo.description(), "INFO", Calendar.getInstance().getTime());
                     ReportPortal.emitLog("Test Author: " + testInfo.author(), "INFO", Calendar.getInstance().getTime());
-                    ReportPortal.emitLog("Test Priority: " + testInfo.priority(), "INFO", Calendar.getInstance().getTime());
+                    ReportPortal.emitLog("Test Priority: " + testInfo.priority().name(), "INFO", Calendar.getInstance().getTime());
 
                     if (!testInfo.jiraId().isEmpty()) {
                         ReportPortal.emitLog("JIRA ID: " + testInfo.jiraId(), "INFO", Calendar.getInstance().getTime());

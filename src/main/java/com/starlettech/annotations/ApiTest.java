@@ -5,6 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.starlettech.enums.TestPriority;
+
 /**
  * Annotation to mark API test methods
  */
@@ -17,6 +19,6 @@ public @interface ApiTest {
     String description() default "";
     String author() default "";
     String[] tags() default {};
-    String priority() default "MEDIUM";
+    TestPriority priority() default TestPriority.MEDIUM;
     String jiraId() default "";
 }

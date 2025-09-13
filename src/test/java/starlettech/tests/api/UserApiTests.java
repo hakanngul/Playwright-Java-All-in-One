@@ -1,20 +1,23 @@
 package starlettech.tests.api;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.starlettech.annotations.ApiTest;
-import com.starlettech.annotations.TestInfo;
-import com.starlettech.core.BaseApiTest;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.starlettech.annotations.ApiTest;
+import com.starlettech.annotations.TestInfo;
+import com.starlettech.core.BaseApiTest;
+import com.starlettech.enums.TestPriority;
+
 import starlettech.api.clients.AuthApiClient;
 import starlettech.api.clients.UserApiClient;
 import starlettech.api.models.User;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * User API Tests
@@ -62,7 +65,7 @@ public class UserApiTests extends BaseApiTest {
     @Test(groups = {"smoke", "api", "users"}, priority = 1)
     @TestInfo(description = "Test getting all users", 
               author = "API Test Engineer", 
-              priority = "HIGH")
+              priority = TestPriority.HIGH)
     public void testGetAllUsers() {
         // Get all users
         List<User> users = userApiClient.getAllUsers();
@@ -83,7 +86,7 @@ public class UserApiTests extends BaseApiTest {
     @Test(groups = {"smoke", "api", "users"}, priority = 2)
     @TestInfo(description = "Test getting user by ID", 
               author = "API Test Engineer", 
-              priority = "HIGH")
+              priority = TestPriority.HIGH)
     public void testGetUserById() {
         // First get all users to get a valid ID
         List<User> users = userApiClient.getAllUsers();
@@ -106,7 +109,7 @@ public class UserApiTests extends BaseApiTest {
     @Test(groups = {"regression", "api", "users"}, priority = 3)
     @TestInfo(description = "Test getting non-existent user", 
               author = "API Test Engineer", 
-              priority = "MEDIUM")
+              priority = TestPriority.MEDIUM)
     public void testGetNonExistentUser() {
         // Try to get user with non-existent ID
         Long nonExistentId = 99999L;
@@ -121,7 +124,7 @@ public class UserApiTests extends BaseApiTest {
     @Test(groups = {"regression", "api", "users"}, priority = 4)
     @TestInfo(description = "Test creating new user", 
               author = "API Test Engineer", 
-              priority = "HIGH")
+              priority = TestPriority.HIGH)
     public void testCreateUser() {
         // Create new user
         User createdUser = userApiClient.createUser(testUser);
@@ -144,7 +147,7 @@ public class UserApiTests extends BaseApiTest {
     @Test(groups = {"regression", "api", "users"}, priority = 5)
     @TestInfo(description = "Test updating user", 
               author = "API Test Engineer", 
-              priority = "HIGH")
+              priority = TestPriority.HIGH)
     public void testUpdateUser() {
         // First create a user
         User createdUser = userApiClient.createUser(testUser);
@@ -171,7 +174,7 @@ public class UserApiTests extends BaseApiTest {
     @Test(groups = {"regression", "api", "users"}, priority = 6)
     @TestInfo(description = "Test partially updating user", 
               author = "API Test Engineer", 
-              priority = "MEDIUM")
+              priority = TestPriority.MEDIUM)
     public void testPatchUser() {
         // First create a user
         User createdUser = userApiClient.createUser(testUser);
@@ -198,7 +201,7 @@ public class UserApiTests extends BaseApiTest {
     @Test(groups = {"regression", "api", "users"}, priority = 7)
     @TestInfo(description = "Test deleting user", 
               author = "API Test Engineer", 
-              priority = "HIGH")
+              priority = TestPriority.HIGH)
     public void testDeleteUser() {
         // First create a user
         User createdUser = userApiClient.createUser(testUser);
@@ -222,7 +225,7 @@ public class UserApiTests extends BaseApiTest {
     @Test(groups = {"regression", "api", "users"}, priority = 8)
     @TestInfo(description = "Test searching users", 
               author = "API Test Engineer", 
-              priority = "MEDIUM")
+              priority = TestPriority.MEDIUM)
     public void testSearchUsers() {
         // Search for users
         String searchQuery = "test";
@@ -248,7 +251,7 @@ public class UserApiTests extends BaseApiTest {
     @Test(groups = {"regression", "api", "users"}, priority = 9)
     @TestInfo(description = "Test getting users with pagination", 
               author = "API Test Engineer", 
-              priority = "MEDIUM")
+              priority = TestPriority.MEDIUM)
     public void testGetUsersWithPagination() {
         // Get paginated users
         int page = 0;
@@ -273,7 +276,7 @@ public class UserApiTests extends BaseApiTest {
     @Test(groups = {"regression", "api", "users"}, priority = 10)
     @TestInfo(description = "Test checking username existence", 
               author = "API Test Engineer", 
-              priority = "LOW")
+              priority = TestPriority.LOW)
     public void testUsernameExists() {
         // Check existing username
         boolean exists = userApiClient.usernameExists("testuser1");
@@ -289,7 +292,7 @@ public class UserApiTests extends BaseApiTest {
     @Test(groups = {"performance", "api", "users"}, priority = 11)
     @TestInfo(description = "Test user creation performance", 
               author = "API Test Engineer", 
-              priority = "LOW")
+              priority = TestPriority.LOW)
     public void testUserCreationPerformance() {
         long startTime = System.currentTimeMillis();
         

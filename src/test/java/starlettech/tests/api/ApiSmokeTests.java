@@ -1,18 +1,21 @@
 package starlettech.tests.api;
 
-import com.starlettech.annotations.ApiTest;
-import com.starlettech.annotations.TestInfo;
-import com.starlettech.core.BaseApiTest;
+import java.util.List;
+
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import com.starlettech.annotations.ApiTest;
+import com.starlettech.annotations.TestInfo;
+import com.starlettech.core.BaseApiTest;
+import com.starlettech.enums.TestPriority;
+
 import starlettech.api.clients.AuthApiClient;
 import starlettech.api.clients.UserApiClient;
 import starlettech.api.models.AuthResponse;
 import starlettech.api.models.User;
-
-import java.util.List;
 
 /**
  * API Smoke Tests - Critical API functionality verification
@@ -41,7 +44,7 @@ public class ApiSmokeTests extends BaseApiTest {
     @Test(groups = {"smoke", "api"}, priority = 1)
     @TestInfo(description = "Smoke test - API health check", 
               author = "API Test Engineer", 
-              priority = "CRITICAL")
+              priority = TestPriority.CRITICAL)
     public void testApiHealthCheck() {
         // Simple health check by attempting to login
         try {
@@ -58,7 +61,7 @@ public class ApiSmokeTests extends BaseApiTest {
     @Test(groups = {"smoke", "api"}, priority = 2, dependsOnMethods = {"testApiHealthCheck"})
     @TestInfo(description = "Smoke test - Authentication flow", 
               author = "API Test Engineer", 
-              priority = "CRITICAL")
+              priority = TestPriority.CRITICAL)
     public void testAuthenticationFlow() {
         // Test complete authentication flow
         
@@ -88,7 +91,7 @@ public class ApiSmokeTests extends BaseApiTest {
     @Test(groups = {"smoke", "api"}, priority = 3, dependsOnMethods = {"testAuthenticationFlow"})
     @TestInfo(description = "Smoke test - User management operations", 
               author = "API Test Engineer", 
-              priority = "CRITICAL")
+              priority = TestPriority.CRITICAL)
     public void testUserManagementOperations() {
         // Login as admin for user management
         authApiClient.loginAndSetToken("admin", "admin123");
@@ -138,7 +141,7 @@ public class ApiSmokeTests extends BaseApiTest {
     @Test(groups = {"smoke", "api"}, priority = 4)
     @TestInfo(description = "Smoke test - Error handling", 
               author = "API Test Engineer", 
-              priority = "HIGH")
+              priority = TestPriority.HIGH)
     public void testErrorHandling() {
         // Test various error scenarios
         
@@ -170,7 +173,7 @@ public class ApiSmokeTests extends BaseApiTest {
     @Test(groups = {"smoke", "api", "performance"}, priority = 5)
     @TestInfo(description = "Smoke test - Basic performance check", 
               author = "API Test Engineer", 
-              priority = "MEDIUM")
+              priority = TestPriority.MEDIUM)
     public void testBasicPerformance() {
         // Test basic performance requirements
         
@@ -209,7 +212,7 @@ public class ApiSmokeTests extends BaseApiTest {
     @Test(groups = {"smoke", "api", "security"}, priority = 6)
     @TestInfo(description = "Smoke test - Basic security checks", 
               author = "API Test Engineer", 
-              priority = "HIGH")
+              priority = TestPriority.HIGH)
     public void testBasicSecurity() {
         // Test basic security measures
         

@@ -7,8 +7,9 @@ import org.testng.annotations.Test;
 import com.starlettech.annotations.Browser;
 import com.starlettech.annotations.TestInfo;
 import com.starlettech.core.BaseTest;
-import com.starlettech.enums.BrowserType;
 import com.starlettech.core.PlaywrightManager;
+import com.starlettech.enums.BrowserType;
+import com.starlettech.enums.TestPriority;
 
 /**
  * Simple SauceDemo UI test suite for basic functionality
@@ -25,7 +26,7 @@ public class SimpleSauceDemoTest extends BaseTest {
     @TestInfo(
         description = "Test basic navigation and login to SauceDemo",
         author = "Test Automation",
-        priority = "High",
+        priority = TestPriority.HIGH,
         tags = {"smoke", "login"}
     )
     public void testBasicSauceDemoLogin() {
@@ -108,7 +109,7 @@ public class SimpleSauceDemoTest extends BaseTest {
     @TestInfo(
         description = "Test adding a product to cart",
         author = "Test Automation", 
-        priority = "High",
+        priority = TestPriority.HIGH,
         tags = {"smoke", "cart"}
     )
     public void testAddProductToCart() {

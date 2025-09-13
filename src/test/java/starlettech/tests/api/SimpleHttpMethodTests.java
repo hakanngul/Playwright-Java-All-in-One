@@ -1,17 +1,20 @@
 package starlettech.tests.api;
 
-import com.starlettech.annotations.ApiTest;
-import com.starlettech.core.BaseApiTest;
-import com.starlettech.validator.Assertions;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-import starlettech.api.clients.TestApiClient;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.starlettech.annotations.ApiTest;
+import com.starlettech.core.BaseApiTest;
+import com.starlettech.enums.TestPriority;
+import com.starlettech.validator.Assertions;
+
+import starlettech.api.clients.TestApiClient;
 
 /**
  * BaseApiClient kullanarak basit HTTP method testleri
@@ -44,7 +47,7 @@ public class SimpleHttpMethodTests extends BaseApiTest {
             requiresAuth = false,
             description = "GET method testi - Tüm postları getir",
             author = "API Test Engineer",
-            priority = "HIGH",
+            priority = TestPriority.HIGH,
             jiraId = "JIRA-123",
             tags = ""
     )

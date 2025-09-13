@@ -6,6 +6,7 @@ import org.testng.annotations.Test;
 
 import com.starlettech.annotations.TestInfo;
 import com.starlettech.config.ReportPortalConfig;
+import com.starlettech.enums.TestPriority;
 import com.starlettech.listeners.ReportPortalListener;
 
 /**
@@ -15,7 +16,8 @@ import com.starlettech.listeners.ReportPortalListener;
 public class ReportPortalDebugTest {
 
     @Test(groups = {"debug", "reportportal"})
-    @TestInfo(description = "Test ReportPortal logging functionality", author = "Debug Engineer", priority = "HIGH")
+    @TestInfo(description = "Test ReportPortal logging functionality", author = "Debug Engineer", 
+    priority = TestPriority.HIGH)
     public void testReportPortalLogging() {
         System.out.println("=== ReportPortal Debug Test ===");
         

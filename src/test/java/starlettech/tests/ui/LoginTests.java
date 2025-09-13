@@ -1,11 +1,14 @@
 package starlettech.tests.ui;
 
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
 import com.starlettech.annotations.Browser;
 import com.starlettech.annotations.TestInfo;
 import com.starlettech.core.BaseTest;
 import com.starlettech.enums.BrowserType;
-import org.testng.Assert;
-import org.testng.annotations.Test;
+import com.starlettech.enums.TestPriority;
+
 import starlettech.pages.HomePage;
 import starlettech.pages.LoginPage;
 
@@ -16,7 +19,7 @@ import starlettech.pages.LoginPage;
 public class LoginTests extends BaseTest {
 
     @Test(groups = {"smoke", "ui", "login"}, priority = 1)
-    @TestInfo(description = "Test valid user login", author = "Test Engineer", priority = "HIGH")
+    @TestInfo(description = "Test valid user login", author = "Test Engineer", priority = TestPriority.HIGH)
     public void testValidLogin() {
         LoginPage loginPage = new LoginPage();
         HomePage homePage = new HomePage();
@@ -41,7 +44,7 @@ public class LoginTests extends BaseTest {
     }
 
     @Test(groups = {"regression", "ui", "login"}, priority = 2)
-    @TestInfo(description = "Test invalid user login", author = "Test Engineer", priority = "HIGH")
+    @TestInfo(description = "Test invalid user login", author = "Test Engineer", priority = TestPriority.HIGH)
     public void testInvalidLogin() {
         LoginPage loginPage = new LoginPage();
 
@@ -64,7 +67,7 @@ public class LoginTests extends BaseTest {
     }
 
     @Test(groups = {"regression", "ui", "login"}, priority = 3)
-    @TestInfo(description = "Test empty credentials login", author = "Test Engineer", priority = "MEDIUM")
+    @TestInfo(description = "Test empty credentials login", author = "Test Engineer", priority = TestPriority.MEDIUM)
     public void testEmptyCredentialsLogin() {
         LoginPage loginPage = new LoginPage();
 
@@ -81,7 +84,7 @@ public class LoginTests extends BaseTest {
     }
 
     @Test(groups = {"regression", "ui", "login"}, priority = 4)
-    @TestInfo(description = "Test login with remember me option", author = "Test Engineer", priority = "LOW")
+    @TestInfo(description = "Test login with remember me option", author = "Test Engineer", priority = TestPriority.LOW)
     public void testLoginWithRememberMe() {
         LoginPage loginPage = new LoginPage();
         HomePage homePage = new HomePage();
@@ -102,7 +105,7 @@ public class LoginTests extends BaseTest {
     }
 
     @Test(groups = {"ui", "login"}, priority = 5)
-    @TestInfo(description = "Test forgot password functionality", author = "Test Engineer", priority = "LOW")
+    @TestInfo(description = "Test forgot password functionality", author = "Test Engineer", priority = TestPriority.LOW)
     public void testForgotPassword() {
         LoginPage loginPage = new LoginPage();
 
@@ -121,7 +124,7 @@ public class LoginTests extends BaseTest {
     }
 
     @Test(groups = {"ui", "login"}, priority = 6)
-    @TestInfo(description = "Test login form elements", author = "Test Engineer", priority = "LOW")
+    @TestInfo(description = "Test login form elements", author = "Test Engineer", priority = TestPriority.LOW)
     public void testLoginFormElements() {
         LoginPage loginPage = new LoginPage();
 
@@ -138,7 +141,7 @@ public class LoginTests extends BaseTest {
     }
 
     @Test(groups = {"regression", "ui", "login"}, priority = 7)
-    @TestInfo(description = "Test login field validation", author = "Test Engineer", priority = "MEDIUM")
+    @TestInfo(description = "Test login field validation", author = "Test Engineer", priority = TestPriority.MEDIUM)
     public void testLoginFieldValidation() {
         LoginPage loginPage = new LoginPage();
 

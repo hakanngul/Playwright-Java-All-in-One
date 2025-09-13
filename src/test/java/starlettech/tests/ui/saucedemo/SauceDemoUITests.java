@@ -10,6 +10,7 @@ import com.starlettech.annotations.Browser;
 import com.starlettech.annotations.TestInfo;
 import com.starlettech.core.BaseTest;
 import com.starlettech.enums.BrowserType;
+import com.starlettech.enums.TestPriority;
 import com.starlettech.testdata.pages.saucedemo.CartPage;
 import com.starlettech.testdata.pages.saucedemo.LoginPage;
 import com.starlettech.testdata.pages.saucedemo.ProductsPage;
@@ -36,7 +37,7 @@ public class SauceDemoUITests extends BaseTest {
     @TestInfo(
         description = "Test successful login with valid credentials",
         author = "Test Automation",
-        priority = "High",
+        priority = TestPriority.HIGH,
         tags = {"smoke", "login", "positive"}
     )
     public void testSuccessfulLogin() {
@@ -66,7 +67,7 @@ public class SauceDemoUITests extends BaseTest {
     @TestInfo(
         description = "Test adding products to cart and verifying cart functionality",
         author = "Test Automation", 
-        priority = "High",
+        priority = TestPriority.HIGH,
         tags = {"smoke", "cart", "positive", "e2e"}
     )
     public void testAddProductsToCartAndVerifyCart() {
@@ -144,7 +145,7 @@ public class SauceDemoUITests extends BaseTest {
     @TestInfo(
         description = "Test login with locked out user", 
         author = "Test Automation",
-        priority = "Medium",
+        priority = TestPriority.MEDIUM,
         tags = {"negative", "login", "security"}
     )
     public void testLockedOutUserLogin() {
@@ -171,7 +172,7 @@ public class SauceDemoUITests extends BaseTest {
     @TestInfo(
         description = "Test product sorting functionality",
         author = "Test Automation",
-        priority = "Medium", 
+        priority = TestPriority.MEDIUM, 
         tags = {"functional", "sorting", "products"}
     )
     public void testProductSorting() {
@@ -217,7 +218,7 @@ public class SauceDemoUITests extends BaseTest {
     @TestInfo(
         description = "Test complete user workflow: login, add products, view cart, logout",
         author = "Test Automation",
-        priority = "High",
+        priority = TestPriority.HIGH,
         tags = {"e2e", "workflow", "smoke", "critical"}
     )
     public void testCompleteUserWorkflow() {

@@ -8,6 +8,7 @@ import com.starlettech.annotations.TestInfo;
 import com.starlettech.core.BaseTest;
 import com.starlettech.core.PlaywrightManager;
 import com.starlettech.enums.BrowserType;
+import com.starlettech.enums.TestPriority;
 
 /**
  * Basic UI tests to verify framework functionality
@@ -16,7 +17,7 @@ import com.starlettech.enums.BrowserType;
 public class BasicUITests extends BaseTest {
 
     @Test(groups = {"smoke", "ui", "basic"}, priority = 1)
-    @TestInfo(description = "Test basic navigation to a simple webpage", author = "Test Engineer", priority = "HIGH")
+    @TestInfo(description = "Test basic navigation to a simple webpage", author = "Test Engineer", priority = TestPriority.HIGH)
     public void testBasicNavigation() {
         logger.info("Starting basic navigation test");
         
@@ -36,7 +37,7 @@ public class BasicUITests extends BaseTest {
     }
 
     @Test(groups = {"smoke", "ui", "basic"}, priority = 2)
-    @TestInfo(description = "Test page content verification", author = "Test Engineer", priority = "MEDIUM")
+    @TestInfo(description = "Test page content verification", author = "Test Engineer", priority = TestPriority.MEDIUM)
     public void testPageContent() {
         logger.info("Starting page content test");
         
@@ -54,7 +55,7 @@ public class BasicUITests extends BaseTest {
     }
 
     @Test(groups = {"ui", "basic"}, priority = 3)
-    @TestInfo(description = "Test browser interaction", author = "Test Engineer", priority = "LOW")
+    @TestInfo(description = "Test browser interaction", author = "Test Engineer", priority = TestPriority.LOW)
     public void testBrowserInteraction() {
         logger.info("Starting browser interaction test");
         

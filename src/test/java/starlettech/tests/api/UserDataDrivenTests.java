@@ -1,19 +1,20 @@
 package starlettech.tests.api;
 
-import com.starlettech.annotations.ApiTest;
-import com.starlettech.annotations.TestInfo;
-import com.starlettech.core.BaseApiTest;
-import com.starlettech.utils.DataProviderUtils;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
+import com.starlettech.annotations.ApiTest;
+import com.starlettech.annotations.TestInfo;
+import com.starlettech.core.BaseApiTest;
+import com.starlettech.enums.TestPriority;
+import com.starlettech.utils.DataProviderUtils;
+
 import starlettech.api.clients.AuthApiClient;
 import starlettech.api.clients.UserApiClient;
 import starlettech.api.models.User;
-
-import java.util.Map;
 
 /**
  * Data-driven API Tests using DataProvider
@@ -88,7 +89,7 @@ public class UserDataDrivenTests extends BaseApiTest {
     @Test(dataProvider = "userCreationData", groups = {"regression", "api", "users"})
     @TestInfo(description = "Data-driven test for user creation with various inputs", 
               author = "API Test Engineer", 
-              priority = "HIGH")
+              priority = TestPriority.HIGH)
     public void testUserCreationWithVariousInputs(String username, String email, String password, 
                                                   String firstName, String lastName, boolean shouldSucceed) {
         
@@ -136,7 +137,7 @@ public class UserDataDrivenTests extends BaseApiTest {
     @Test(dataProvider = "loginTestData", groups = {"regression", "api", "auth"})
     @TestInfo(description = "Data-driven test for login with various credentials", 
               author = "API Test Engineer", 
-              priority = "HIGH")
+              priority = TestPriority.HIGH)
     public void testLoginWithVariousCredentials(String username, String password, boolean shouldSucceed, String description) {
         
         try {
@@ -187,7 +188,7 @@ public class UserDataDrivenTests extends BaseApiTest {
     @Test(dataProvider = "userSearchData", groups = {"regression", "api", "users"})
     @TestInfo(description = "Data-driven test for user search functionality", 
               author = "API Test Engineer", 
-              priority = "MEDIUM")
+              priority = TestPriority.MEDIUM)
     public void testUserSearchWithVariousQueries(String searchQuery, String description) {
         
         try {
@@ -232,7 +233,7 @@ public class UserDataDrivenTests extends BaseApiTest {
     @Test(dataProvider = "performanceTestData", groups = {"performance", "api", "users"})
     @TestInfo(description = "Performance test for user operations", 
               author = "API Test Engineer", 
-              priority = "LOW")
+              priority = TestPriority.LOW)
     public void testUserOperationsPerformance(int operationCount, long maxTimeMs, String description) {
         
         long startTime = System.currentTimeMillis();

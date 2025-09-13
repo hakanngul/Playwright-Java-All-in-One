@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.starlettech.annotations.ApiTest;
 import com.starlettech.annotations.TestInfo;
 import com.starlettech.core.BaseApiTest;
+import com.starlettech.enums.TestPriority;
 
 import starlettech.api.clients.AuthApiClient;
 import starlettech.api.models.AuthResponse;
@@ -40,7 +41,7 @@ public class AuthApiTests extends BaseApiTest {
     @Test(groups = {"smoke", "api", "auth"}, priority = 1)
     @TestInfo(description = "Test successful login with valid credentials", 
               author = "API Test Engineer", 
-              priority = "HIGH")
+              priority = TestPriority.HIGH)
     public void testValidLogin() {
         // Test data
         String username = "testuser1";
@@ -62,7 +63,7 @@ public class AuthApiTests extends BaseApiTest {
     @Test(groups = {"regression", "api", "auth"}, priority = 2)
     @TestInfo(description = "Test login with invalid credentials", 
               author = "API Test Engineer", 
-              priority = "HIGH")
+              priority = TestPriority.HIGH)
     public void testInvalidLogin() {
         // Test data
         String username = "invaliduser";
@@ -84,7 +85,7 @@ public class AuthApiTests extends BaseApiTest {
     @Test(groups = {"regression", "api", "auth"}, priority = 3)
     @TestInfo(description = "Test login with empty credentials", 
               author = "API Test Engineer", 
-              priority = "MEDIUM")
+              priority = TestPriority.MEDIUM)
     public void testEmptyCredentialsLogin() {
         // Test data
         String username = "";
@@ -105,7 +106,7 @@ public class AuthApiTests extends BaseApiTest {
     @Test(groups = {"regression", "api", "auth"}, priority = 4)
     @TestInfo(description = "Test token validation", 
               author = "API Test Engineer", 
-              priority = "HIGH")
+              priority = TestPriority.HIGH)
     public void testTokenValidation() {
         // Login first
         String token = authApiClient.loginAndSetToken("testuser1", "password123");
@@ -121,7 +122,7 @@ public class AuthApiTests extends BaseApiTest {
     @Test(groups = {"regression", "api", "auth"}, priority = 5)
     @TestInfo(description = "Test getting current user profile", 
               author = "API Test Engineer", 
-              priority = "MEDIUM")
+              priority = TestPriority.MEDIUM)
     public void testGetCurrentUser() {
         // Login first
         authApiClient.loginAndSetToken("testuser1", "password123");
@@ -140,7 +141,7 @@ public class AuthApiTests extends BaseApiTest {
     @Test(groups = {"regression", "api", "auth"}, priority = 6)
     @TestInfo(description = "Test logout functionality", 
               author = "API Test Engineer", 
-              priority = "MEDIUM")
+              priority = TestPriority.MEDIUM)
     public void testLogout() {
         // Login first
         authApiClient.loginAndSetToken("testuser1", "password123");
@@ -160,7 +161,7 @@ public class AuthApiTests extends BaseApiTest {
     @Test(groups = {"regression", "api", "auth"}, priority = 7)
     @TestInfo(description = "Test password reset request", 
               author = "API Test Engineer", 
-              priority = "LOW")
+              priority = TestPriority.LOW)
     public void testPasswordResetRequest() {
         // Test data
         String email = "testuser1@example.com";
@@ -177,7 +178,7 @@ public class AuthApiTests extends BaseApiTest {
     @Test(groups = {"regression", "api", "auth"}, priority = 8)
     @TestInfo(description = "Test authentication status", 
               author = "API Test Engineer", 
-              priority = "LOW")
+              priority = TestPriority.LOW)
     public void testAuthStatus() {
         // Login first
         authApiClient.loginAndSetToken("testuser1", "password123");
@@ -196,7 +197,7 @@ public class AuthApiTests extends BaseApiTest {
     @Test(groups = {"performance", "api", "auth"}, priority = 9)
     @TestInfo(description = "Test login performance", 
               author = "API Test Engineer", 
-              priority = "LOW")
+              priority = TestPriority.LOW)
     public void testLoginPerformance() {
         long startTime = System.currentTimeMillis();
         
@@ -216,7 +217,7 @@ public class AuthApiTests extends BaseApiTest {
     @Test(groups = {"security", "api", "auth"}, priority = 10)
     @TestInfo(description = "Test SQL injection in login", 
               author = "API Test Engineer", 
-              priority = "HIGH")
+              priority = TestPriority.HIGH)
     public void testSqlInjectionLogin() {
         // Test data with SQL injection attempt
         String maliciousUsername = "admin'; DROP TABLE users; --";
