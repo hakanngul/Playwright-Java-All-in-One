@@ -15,6 +15,9 @@ target/
 # Screenshots
 screenshots/
 
+# Test-output
+test-output/
+
 .idea/AugmentWebviewStateStore.xml
 *.log
 

@@ -4,7 +4,7 @@
     
     <listeners>
         <listener class-name="com.starlettech.listeners.TestListener"/>
-        <listener class-name="com.epam.reportportal.testng.ReportPortalTestNGListener"/>
+        <listener class-name="com.starlettech.listeners.ReportPortalListener"/>
     </listeners>
     
     <test name="SauceDemo UI Tests">

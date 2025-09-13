@@ -11,6 +11,7 @@ import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.Listeners;
 
 import com.starlettech.annotations.Browser;
 import com.starlettech.config.BrowserConfig;
@@ -22,12 +23,16 @@ import com.starlettech.core.managers.PlaywrightManager;
 import com.starlettech.core.managers.ResourceCleanupManager;
 import com.starlettech.core.managers.ThreadLocalManager;
 import com.starlettech.enums.BrowserType;
+import com.starlettech.listeners.AnnotationIntegrationListener;
+import com.starlettech.listeners.ReportPortalListener;
+import com.starlettech.listeners.TestListener;
 import com.starlettech.utils.DatabaseUtils;
 import com.starlettech.utils.ScreenshotUtils;
 
 /**
  * Base Test class for UI tests
  */
+@Listeners({ReportPortalListener.class, TestListener.class, AnnotationIntegrationListener.class})
 public abstract class BaseTest {
     protected final Logger logger = LogManager.getLogger(this.getClass());
     protected TestConfig testConfig;
