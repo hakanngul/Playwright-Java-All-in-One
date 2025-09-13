@@ -1,14 +1,26 @@
 package com.starlettech.utils;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.starlettech.config.TestConfig;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.*;
-import java.util.*;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.starlettech.config.TestConfig;
 
 /**
  * Data Provider utilities for TestNG data providers
@@ -21,52 +33,51 @@ public class DataProviderUtils {
     /**
      * Read data from Excel file
      */
+    @SuppressWarnings("resource")
     public static Object[][] readExcelData(String fileName, String sheetName) {
         List<Map<String, String>> dataList = new ArrayList<>();
         
         try {
             String filePath = testConfig.getTestDataPath() + "/" + fileName;
-            FileInputStream fis = new FileInputStream(filePath);
-            Workbook workbook = new XSSFWorkbook(fis);
-            Sheet sheet = workbook.getSheet(sheetName);
-            
-            if (sheet == null) {
-                logger.error("Sheet '{}' not found in file '{}'", sheetName, fileName);
-                return new Object[0][0];
-            }
-            
-            // Get header row
-            Row headerRow = sheet.getRow(0);
-            if (headerRow == null) {
-                logger.error("Header row not found in sheet '{}'", sheetName);
-                return new Object[0][0];
-            }
-            
-            List<String> headers = new ArrayList<>();
-            for (Cell cell : headerRow) {
-                headers.add(getCellValueAsString(cell));
-            }
-            
-            // Read data rows
-            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-                Row row = sheet.getRow(i);
-                if (row == null) continue;
+            try (FileInputStream fis = new FileInputStream(filePath); Workbook workbook = new XSSFWorkbook(fis)) {
+                Sheet sheet = workbook.getSheet(sheetName);
                 
-                Map<String, String> rowData = new HashMap<>();
-                for (int j = 0; j < headers.size(); j++) {
-                    Cell cell = row.getCell(j);
-                    String cellValue = cell != null ? getCellValueAsString(cell) : "";
-                    rowData.put(headers.get(j), cellValue);
+                if (sheet == null) {
+                    logger.error("Sheet '{}' not found in file '{}'", sheetName, fileName);
+                    return new Object[0][0];
                 }
-                dataList.add(rowData);
+
+                // Get header row
+                Row headerRow = sheet.getRow(0);
+                if (headerRow == null) {
+                    logger.error("Header row not found in sheet '{}'", sheetName);
+                    return new Object[0][0];
+                }
+                
+                List<String> headers = new ArrayList<>();
+                for (Cell cell : headerRow) {
+                    headers.add(getCellValueAsString(cell));
+                }
+                
+                // Read data rows
+                for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                    Row row = sheet.getRow(i);
+                    if (row == null) continue;
+                    
+                    Map<String, String> rowData = new HashMap<>();
+                    for (int j = 0; j < headers.size(); j++) {
+                        Cell cell = row.getCell(j);
+                        String cellValue = cell != null ? getCellValueAsString(cell) : "";
+                        rowData.put(headers.get(j), cellValue);
+                    }
+                    dataList.add(rowData);
+                }
+                
             }
-            
-            workbook.close();
-            fis.close();
             
             logger.info("Read {} rows from Excel file: {}", dataList.size(), fileName);
             
-        } catch (Exception e) {
+        } catch (IOException e) {
             logger.error("Error reading Excel file {}: {}", fileName, e.getMessage());
             return new Object[0][0];
         }
@@ -115,7 +126,7 @@ public class DataProviderUtils {
             br.close();
             logger.info("Read {} rows from CSV file: {}", dataList.size(), fileName);
             
-        } catch (Exception e) {
+        } catch (IOException e) {
             logger.error("Error reading CSV file {}: {}", fileName, e.getMessage());
             return new Object[0][0];
         }
@@ -182,7 +193,7 @@ public class DataProviderUtils {
             Collections.addAll(combinedData, dataSource);
         }
         
-        return combinedData.toArray(new Object[0][]);
+        return combinedData.toArray(Object[][]::new);
     }
 
     /**
@@ -202,7 +213,7 @@ public class DataProviderUtils {
         }
         
         logger.info("Filtered data: {} rows match criteria {}={}", filteredData.size(), key, value);
-        return filteredData.toArray(new Object[0][]);
+        return filteredData.toArray(Object[][]::new);
     }
 
     /**

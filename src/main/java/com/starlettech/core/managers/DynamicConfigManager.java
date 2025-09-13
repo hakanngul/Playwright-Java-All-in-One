@@ -1,4 +1,4 @@
-package com.starlettech.managers;
+package com.starlettech.core.managers;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -292,7 +292,7 @@ public class DynamicConfigManager {
             } else {
                 return (T) stringValue;
             }
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             logger.warn("Failed to convert '{}' to type {}, using default value", stringValue, targetType.getSimpleName());
             return defaultValue;
         }

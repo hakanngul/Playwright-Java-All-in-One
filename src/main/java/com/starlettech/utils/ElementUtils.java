@@ -10,7 +10,7 @@ import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.BoundingBox;
 import com.microsoft.playwright.options.SelectOption;
-import com.starlettech.managers.PlaywrightManager;
+import com.starlettech.core.managers.PlaywrightManager;
 
 /**
  * Utility class for element operations
@@ -375,7 +375,7 @@ public class ElementUtils {
             // Additional wait for element to be stable
             Thread.sleep(100);
             logger.debug("Element is stable: {}", selector);
-        } catch (Exception e) {
+        } catch (InterruptedException e) {
             logger.error("Failed to wait for element to be stable {}: {}", selector, e.getMessage());
         }
     }

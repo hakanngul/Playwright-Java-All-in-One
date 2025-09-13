@@ -2,7 +2,7 @@ package starlettech.api.clients;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.microsoft.playwright.APIResponse;
-import com.starlettech.managers.ApiRequestManager;
+import com.starlettech.core.managers.ApiRequestManager;
 import com.starlettech.utils.ApiUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

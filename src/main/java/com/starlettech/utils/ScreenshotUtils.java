@@ -12,7 +12,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.microsoft.playwright.Page;
 import com.starlettech.config.TestConfig;
-import com.starlettech.managers.PlaywrightManager;
+import com.starlettech.core.managers.PlaywrightManager;
 
 /**
  * Utility class for taking screenshots

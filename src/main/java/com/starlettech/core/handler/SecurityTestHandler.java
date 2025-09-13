@@ -1,4 +1,4 @@
-package com.starlettech.core;
+package com.starlettech.core.handler;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -79,21 +79,19 @@ public class SecurityTestHandler {
 
         for (SecurityTest.SecurityType type : types) {
             switch (type) {
-                case SQL_INJECTION:
+                case SQL_INJECTION -> {
                     if (SQL_INJECTION_PATTERN.matcher(input).find()) {
                         validation.addViolation("Potential SQL injection detected in input: " + input);
                     }
-                    break;
-                case XSS:
+                }
+                case XSS -> {
                     if (XSS_PATTERN.matcher(input).find()) {
                         validation.addViolation("Potential XSS vulnerability detected in input: " + input);
                     }
-                    break;
-                case INPUT_VALIDATION:
-                    validateInputFormat(input, validation);
-                    break;
-                default:
-                    break;
+                }
+                case INPUT_VALIDATION -> validateInputFormat(input, validation);
+                default -> {
+                }
             }
         }
 

@@ -7,9 +7,9 @@ import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.WaitForSelectorState;
 import com.starlettech.config.TestConfig;
+import com.starlettech.core.managers.PlaywrightManager;
 import com.starlettech.exceptions.BrowserException;
 import com.starlettech.exceptions.PageException;
-import com.starlettech.managers.PlaywrightManager;
 import com.starlettech.utils.WaitUtils;
 
 /**

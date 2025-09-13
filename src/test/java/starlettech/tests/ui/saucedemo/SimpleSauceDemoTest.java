@@ -7,9 +7,9 @@ import org.testng.annotations.Test;
 import com.starlettech.annotations.Browser;
 import com.starlettech.annotations.TestInfo;
 import com.starlettech.core.base.BaseTest;
+import com.starlettech.core.managers.PlaywrightManager;
 import com.starlettech.enums.BrowserType;
 import com.starlettech.enums.TestPriority;
-import com.starlettech.managers.PlaywrightManager;
 
 /**
  * Simple SauceDemo UI test suite for basic functionality

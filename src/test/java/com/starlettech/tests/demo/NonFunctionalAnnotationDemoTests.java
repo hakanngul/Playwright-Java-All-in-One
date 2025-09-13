@@ -13,8 +13,8 @@ import com.starlettech.annotations.Retry;
 import com.starlettech.annotations.SecurityTest;
 import com.starlettech.annotations.TestCategory;
 import com.starlettech.annotations.TestInfo;
-import com.starlettech.core.PerformanceTestHandler;
-import com.starlettech.core.SecurityTestHandler;
+import com.starlettech.core.handler.PerformanceTestHandler;
+import com.starlettech.core.handler.SecurityTestHandler;
 import com.starlettech.enums.TestPriority;
 
 /**

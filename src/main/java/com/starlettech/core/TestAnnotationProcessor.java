@@ -19,8 +19,10 @@ import com.starlettech.annotations.Retry;
 import com.starlettech.annotations.SecurityTest;
 import com.starlettech.annotations.TestCategory;
 import com.starlettech.annotations.TestInfo;
-import com.starlettech.core.PerformanceTestHandler.PerformanceMetrics;
-import com.starlettech.core.SecurityTestHandler.SecurityValidationResult;
+import com.starlettech.core.handler.PerformanceTestHandler;
+import com.starlettech.core.handler.PerformanceTestHandler.PerformanceMetrics;
+import com.starlettech.core.handler.SecurityTestHandler;
+import com.starlettech.core.handler.SecurityTestHandler.SecurityValidationResult;
 
 /**
  * Centralized annotation processor for all test annotations

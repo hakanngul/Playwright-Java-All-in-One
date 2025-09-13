@@ -1,4 +1,4 @@
-package com.starlettech.core;
+package com.starlettech.core.handler;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;

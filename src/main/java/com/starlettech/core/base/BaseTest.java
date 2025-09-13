@@ -15,13 +15,13 @@ import org.testng.annotations.BeforeSuite;
 import com.starlettech.annotations.Browser;
 import com.starlettech.config.BrowserConfig;
 import com.starlettech.config.TestConfig;
-import com.starlettech.core.ResourceCleanupManager;
 import com.starlettech.core.RetryAnalyzer;
 import com.starlettech.core.TestMetricsCollector;
+import com.starlettech.core.managers.DynamicConfigManager;
+import com.starlettech.core.managers.PlaywrightManager;
+import com.starlettech.core.managers.ResourceCleanupManager;
+import com.starlettech.core.managers.ThreadLocalManager;
 import com.starlettech.enums.BrowserType;
-import com.starlettech.managers.DynamicConfigManager;
-import com.starlettech.managers.PlaywrightManager;
-import com.starlettech.managers.ThreadLocalManager;
 import com.starlettech.utils.DatabaseUtils;
 import com.starlettech.utils.ScreenshotUtils;
 

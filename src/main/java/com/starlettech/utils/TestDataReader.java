@@ -1,15 +1,17 @@
 package com.starlettech.utils;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.starlettech.config.TestConfig;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.starlettech.config.TestConfig;
 
 /**
  * Utility class for reading test data from various sources
@@ -25,6 +27,7 @@ public class TestDataReader {
         this.testConfig = TestConfig.getInstance();
     }
 
+    @SuppressWarnings("DoubleCheckedLocking")
     public static TestDataReader getInstance() {
         if (instance == null) {
             synchronized (TestDataReader.class) {
@@ -141,7 +144,7 @@ public class TestDataReader {
     public <T> T convertToObject(JsonNode jsonNode, Class<T> clazz) {
         try {
             return objectMapper.treeToValue(jsonNode, clazz);
-        } catch (Exception e) {
+        } catch (JsonProcessingException | IllegalArgumentException e) {
             logger.error("Failed to convert JsonNode to {}: {}", clazz.getSimpleName(), e.getMessage());
             return null;
         }

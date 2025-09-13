@@ -20,7 +20,7 @@ import com.microsoft.playwright.APIRequestContext;
 import com.microsoft.playwright.APIResponse;
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.options.RequestOptions;
-import com.starlettech.managers.PlaywrightManager;
+import com.starlettech.core.managers.PlaywrightManager;
 import com.starlettech.utils.JsonUtils;
 
 /**

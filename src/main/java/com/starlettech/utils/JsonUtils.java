@@ -1,13 +1,14 @@
 package com.starlettech.utils;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Utility class for JSON operations
@@ -146,8 +147,8 @@ public class JsonUtils {
             }
 
             // Update the value
-            if (currentNode instanceof ObjectNode) {
-                ((ObjectNode) currentNode).put(pathParts[pathParts.length - 1], newValue);
+            if (currentNode instanceof ObjectNode objectNode) {
+                objectNode.put(pathParts[pathParts.length - 1], newValue);
                 logger.debug("Updated JSON node at path: {}", path);
             }
 

@@ -1,4 +1,4 @@
-package com.starlettech.managers;
+package com.starlettech.core.managers;
 
 import java.nio.file.Paths;
 import java.util.List;

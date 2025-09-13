@@ -17,8 +17,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.microsoft.playwright.APIResponse;
 import com.starlettech.config.ApiConfig;
 import com.starlettech.config.TestConfig;
-import com.starlettech.managers.ApiRequestManager;
-import com.starlettech.managers.PlaywrightManager;
+import com.starlettech.core.managers.ApiRequestManager;
+import com.starlettech.core.managers.PlaywrightManager;
 import com.starlettech.utils.ApiUtils;
 import com.starlettech.utils.TestDataReader;
 

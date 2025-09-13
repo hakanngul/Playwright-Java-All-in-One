@@ -17,8 +17,8 @@ import com.starlettech.annotations.SecurityTest;
 import com.starlettech.annotations.TestCategory;
 import com.starlettech.annotations.TestInfo;
 import com.starlettech.config.ReportPortalConfig;
-import com.starlettech.core.PerformanceTestHandler;
 import com.starlettech.core.TestAnnotationProcessor;
+import com.starlettech.core.handler.PerformanceTestHandler;
 import com.starlettech.utils.ScreenshotUtils;
 
 /**

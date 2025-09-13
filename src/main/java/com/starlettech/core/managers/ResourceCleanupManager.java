@@ -1,4 +1,4 @@
-package com.starlettech.core;
+package com.starlettech.core.managers;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
@@ -10,8 +10,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import com.starlettech.managers.ThreadLocalManager;
 
 /**
  * Resource Cleanup Manager for preventing memory leaks and zombie processes

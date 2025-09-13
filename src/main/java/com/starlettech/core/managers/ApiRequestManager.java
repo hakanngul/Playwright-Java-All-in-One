@@ -1,4 +1,4 @@
-package com.starlettech.managers;
+package com.starlettech.core.managers;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -107,7 +107,7 @@ public class ApiRequestManager {
                         Thread.sleep(1000 * attempt); // Exponential backoff
                     }
                 }
-            } catch (Exception e) {
+            } catch (InterruptedException e) {
                 lastException = e;
                 logger.error("Request failed on attempt {}: {}", attempt, e.getMessage());
                 if (attempt <= retryCount) {

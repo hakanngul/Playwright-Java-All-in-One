@@ -14,8 +14,8 @@ import com.microsoft.playwright.APIResponse;
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.options.RequestOptions;
 import com.starlettech.config.ApiConfig;
+import com.starlettech.core.managers.PlaywrightManager;
 import com.starlettech.enums.HttpMethod;
-import com.starlettech.managers.PlaywrightManager;
 
 /**
  * Utility class for API operations
