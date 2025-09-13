@@ -24,7 +24,6 @@ import com.starlettech.core.managers.ResourceCleanupManager;
 import com.starlettech.core.managers.ThreadLocalManager;
 import com.starlettech.enums.BrowserType;
 import com.starlettech.listeners.AnnotationIntegrationListener;
-import com.starlettech.listeners.ReportPortalListener;
 import com.starlettech.listeners.TestListener;
 import com.starlettech.utils.DatabaseUtils;
 import com.starlettech.utils.ScreenshotUtils;
@@ -32,7 +31,7 @@ import com.starlettech.utils.ScreenshotUtils;
 /**
  * Base Test class for UI tests
  */
-@Listeners({ReportPortalListener.class, TestListener.class, AnnotationIntegrationListener.class})
+@Listeners({TestListener.class, AnnotationIntegrationListener.class})
 public abstract class BaseTest {
     protected final Logger logger = LogManager.getLogger(this.getClass());
     protected TestConfig testConfig;

@@ -124,14 +124,6 @@ public class AnnotationIntegrationListener implements ITestListener {
                        context.getSecurityTest().sensitiveData());
         }
 
-        // Log API Test
-        if (context.hasApiTest()) {
-            logger.info("🌐 API Test - Endpoint: '{}', Method: {}, Auth Required: {}", 
-                       context.getApiTest().endpoint(),
-                       context.getApiTest().method(),
-                       context.getApiTest().requiresAuth());
-        }
-
         // Log Browser Test
         if (context.hasBrowser()) {
             logger.info("🖥️ Browser Test - Type: {}, Headless: {}", 

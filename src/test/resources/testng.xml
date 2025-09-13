@@ -5,6 +5,7 @@
     <listeners>
         <listener class-name="com.starlettech.listeners.TestListener"/>
         <listener class-name="com.starlettech.listeners.ReportPortalListener"/>
+        <listener class-name="com.starlettech.listeners.AllureTestNGEnhancedListener"/>
     </listeners>
     
     <test name="UI Tests">

@@ -12,6 +12,9 @@ target/
 *.iml
 *.ipr
 
+# Allure
+.allure/
+
 # Screenshots
 screenshots/
 

@@ -11,7 +11,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.testng.ITestResult;
 
-import com.starlettech.annotations.ApiTest;
 import com.starlettech.annotations.Browser;
 import com.starlettech.annotations.DataDriven;
 import com.starlettech.annotations.PerformanceTest;
@@ -46,9 +45,6 @@ public class TestAnnotationProcessor {
             
             // Process TestCategory annotation
             processTestCategory(testMethod, context);
-            
-            // Process ApiTest annotation
-            processApiTest(testMethod, context);
             
             // Process Browser annotation
             processBrowser(testMethod, context);
@@ -125,13 +121,6 @@ public class TestAnnotationProcessor {
         }
     }
 
-    private static void processApiTest(Method testMethod, TestExecutionContext context) {
-        ApiTest apiTest = getAnnotation(testMethod, ApiTest.class);
-        if (apiTest != null) {
-            context.setApiTest(apiTest);
-        }
-    }
-
     private static void processBrowser(Method testMethod, TestExecutionContext context) {
         Browser browser = getAnnotation(testMethod, Browser.class);
         if (browser != null) {
@@ -191,7 +180,6 @@ public class TestAnnotationProcessor {
     public static class TestExecutionContext {
         private TestInfo testInfo;
         private TestCategory testCategory;
-        private ApiTest apiTest;
         private Browser browser;
         private DataDriven dataDriven;
         private PerformanceTest performanceTest;
@@ -206,9 +194,6 @@ public class TestAnnotationProcessor {
 
         public TestCategory getTestCategory() { return testCategory; }
         public void setTestCategory(TestCategory testCategory) { this.testCategory = testCategory; }
-
-        public ApiTest getApiTest() { return apiTest; }
-        public void setApiTest(ApiTest apiTest) { this.apiTest = apiTest; }
 
         public Browser getBrowser() { return browser; }
         public void setBrowser(Browser browser) { this.browser = browser; }
@@ -234,7 +219,6 @@ public class TestAnnotationProcessor {
         // Helper methods
         public boolean hasTestInfo() { return testInfo != null; }
         public boolean hasTestCategory() { return testCategory != null; }
-        public boolean hasApiTest() { return apiTest != null; }
         public boolean hasBrowser() { return browser != null; }
         public boolean hasDataDriven() { return dataDriven != null; }
         public boolean hasPerformanceTest() { return performanceTest != null; }
@@ -245,7 +229,6 @@ public class TestAnnotationProcessor {
             List<String> annotations = new ArrayList<>();
             if (hasTestInfo()) annotations.add("TestInfo");
             if (hasTestCategory()) annotations.add("TestCategory");
-            if (hasApiTest()) annotations.add("ApiTest");
             if (hasBrowser()) annotations.add("Browser");
             if (hasDataDriven()) annotations.add("DataDriven");
             if (hasPerformanceTest()) annotations.add("PerformanceTest");

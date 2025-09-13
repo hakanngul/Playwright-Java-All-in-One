@@ -199,14 +199,6 @@ public class DynamicConfigManager {
         logger.info("Base URL overridden to: {}", baseUrl);
     }
 
-    /**
-     * Override API base URL for current thread
-     */
-    public static void setApiBaseUrl(String apiBaseUrl) {
-        setThreadLocalConfig("api.base.url", apiBaseUrl);
-        logger.info("API base URL overridden to: {}", apiBaseUrl);
-    }
-
     // ========== Test Configuration Overrides ==========
 
     /**

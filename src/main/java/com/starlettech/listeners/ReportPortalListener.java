@@ -11,7 +11,6 @@ import org.testng.ITestResult;
 
 import com.epam.reportportal.service.ReportPortal;
 import com.epam.reportportal.testng.ReportPortalTestNGListener;
-import com.starlettech.annotations.ApiTest;
 import com.starlettech.annotations.PerformanceTest;
 import com.starlettech.annotations.SecurityTest;
 import com.starlettech.annotations.TestCategory;
@@ -174,14 +173,6 @@ public class ReportPortalListener extends ReportPortalTestNGListener {
             if (testInfo.tags().length > 0) {
                 ReportPortal.emitLog("Tags: " + String.join(", ", testInfo.tags()), "INFO", Calendar.getInstance().getTime());
             }
-        }
-
-        // Add API test information from annotation
-        if (context.hasApiTest()) {
-            ApiTest apiTest = context.getApiTest();
-            ReportPortal.emitLog("API Endpoint: " + apiTest.endpoint(), "INFO", Calendar.getInstance().getTime());
-            ReportPortal.emitLog("HTTP Method: " + apiTest.method(), "INFO", Calendar.getInstance().getTime());
-            ReportPortal.emitLog("Requires Auth: " + apiTest.requiresAuth(), "INFO", Calendar.getInstance().getTime());
         }
 
         // Add Performance test information from annotation

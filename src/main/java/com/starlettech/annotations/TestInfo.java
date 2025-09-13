@@ -8,13 +8,11 @@ import java.lang.annotation.Target;
 import com.starlettech.enums.TestPriority;
 
 /**
- * Annotation to provide additional test information
+ * Annotation to provide additional test information for both ReportPortal and Allure reporting
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TestInfo {
-    String MEDIUM = null;
-
     String description() default "";
     String author() default "";
     String[] tags() default {};
@@ -24,4 +22,8 @@ public @interface TestInfo {
     String estimatedDuration() default "";
     boolean isBlocking() default false;
     
+    // Allure-specific fields
+    String epic() default "";
+    String feature() default "";
+    String story() default "";
 }
