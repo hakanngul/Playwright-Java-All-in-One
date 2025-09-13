@@ -5,7 +5,7 @@ import org.testng.annotations.Test;
 
 import com.starlettech.annotations.Browser;
 import com.starlettech.annotations.TestInfo;
-import com.starlettech.core.BaseTest;
+import com.starlettech.core.base.BaseTest;
 import com.starlettech.enums.BrowserType;
 import com.starlettech.enums.TestPriority;
 

@@ -1,16 +1,14 @@
-package com.starlettech.core;
-
-import com.starlettech.config.ApiConfig;
-import com.starlettech.config.BrowserConfig;
-import com.starlettech.config.TestConfig;
-import com.starlettech.enums.BrowserType;
-import com.starlettech.enums.Environment;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+package com.starlettech.managers;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.starlettech.enums.BrowserType;
+import com.starlettech.enums.Environment;
 
 /**
  * Dynamic Configuration Manager for runtime configuration changes

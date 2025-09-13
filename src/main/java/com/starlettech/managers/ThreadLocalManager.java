@@ -1,4 +1,4 @@
-package com.starlettech.core;
+package com.starlettech.managers;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.microsoft.playwright.Locator;
 import com.starlettech.annotations.Browser;
-import com.starlettech.core.BasePage;
+import com.starlettech.core.base.BasePage;
 import com.starlettech.enums.BrowserType;
 
 /**

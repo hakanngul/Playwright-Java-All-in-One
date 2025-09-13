@@ -1,18 +1,26 @@
-package com.starlettech.core;
+package com.starlettech.core.base;
+
+import java.lang.reflect.Method;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.testng.Assert;
+import org.testng.ITestResult;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.microsoft.playwright.APIResponse;
 import com.starlettech.config.ApiConfig;
 import com.starlettech.config.TestConfig;
+import com.starlettech.managers.ApiRequestManager;
+import com.starlettech.managers.PlaywrightManager;
 import com.starlettech.utils.ApiUtils;
 import com.starlettech.utils.TestDataReader;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.testng.Assert;
-import org.testng.ITestResult;
-import org.testng.annotations.*;
-
-import java.lang.reflect.Method;
 
 /**
  * Base API Test class for API tests

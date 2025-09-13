@@ -12,8 +12,13 @@ import org.testng.ITestResult;
 import com.epam.reportportal.service.ReportPortal;
 import com.epam.reportportal.testng.ReportPortalTestNGListener;
 import com.starlettech.annotations.ApiTest;
+import com.starlettech.annotations.PerformanceTest;
+import com.starlettech.annotations.SecurityTest;
+import com.starlettech.annotations.TestCategory;
 import com.starlettech.annotations.TestInfo;
 import com.starlettech.config.ReportPortalConfig;
+import com.starlettech.core.PerformanceTestHandler;
+import com.starlettech.core.TestAnnotationProcessor;
 import com.starlettech.utils.ScreenshotUtils;
 
 /**
@@ -37,33 +42,17 @@ public class ReportPortalListener extends ReportPortalTestNGListener {
 
         if (rpConfig.isEnable()) {
             try {
-                // Add test information from annotation
-                TestInfo testInfo = result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(TestInfo.class);
-                if (testInfo != null) {
-                    ReportPortal.emitLog("Test Description: " + testInfo.description(), "INFO", Calendar.getInstance().getTime());
-                    ReportPortal.emitLog("Test Author: " + testInfo.author(), "INFO", Calendar.getInstance().getTime());
-                    ReportPortal.emitLog("Test Priority: " + testInfo.priority().name(), "INFO", Calendar.getInstance().getTime());
-
-                    if (!testInfo.jiraId().isEmpty()) {
-                        ReportPortal.emitLog("JIRA ID: " + testInfo.jiraId(), "INFO", Calendar.getInstance().getTime());
-                    }
-
-                    if (testInfo.tags().length > 0) {
-                        ReportPortal.emitLog("Tags: " + String.join(", ", testInfo.tags()), "INFO", Calendar.getInstance().getTime());
-                    }
+                // Use centralized annotation processor
+                TestAnnotationProcessor.TestExecutionContext context = TestAnnotationProcessor.processPreTestAnnotations(result);
+                
+                if (context != null) {
+                    // Log basic test information
+                    String startTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                    ReportPortal.emitLog("Test started at: " + startTime, "INFO", Calendar.getInstance().getTime());
+                    
+                    // Log annotation information using context
+                    logAnnotationInfo(context);
                 }
-
-                // Add API test information from annotation
-                ApiTest apiTest = result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(ApiTest.class);
-                if (apiTest != null) {
-                    ReportPortal.emitLog("API Endpoint: " + apiTest.endpoint(), "INFO", Calendar.getInstance().getTime());
-                    ReportPortal.emitLog("HTTP Method: " + apiTest.method(), "INFO", Calendar.getInstance().getTime());
-                    ReportPortal.emitLog("Requires Auth: " + apiTest.requiresAuth(), "INFO", Calendar.getInstance().getTime());
-                }
-
-                // Log test start time
-                String startTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-                ReportPortal.emitLog("Test started at: " + startTime, "INFO", Calendar.getInstance().getTime());
 
                 logger.debug("ReportPortal test start logged for: {}", result.getMethod().getMethodName());
             } catch (Exception e) {
@@ -82,6 +71,32 @@ public class ReportPortalListener extends ReportPortalTestNGListener {
                 ReportPortal.emitLog("✅ Test completed successfully", "INFO", Calendar.getInstance().getTime());
                 ReportPortal.emitLog("Test ended at: " + endTime, "INFO", Calendar.getInstance().getTime());
                 ReportPortal.emitLog("Test duration: " + duration + "ms", "INFO", Calendar.getInstance().getTime());
+
+                // Handle Performance Test Results
+                PerformanceTest perfTest = result.getMethod().getConstructorOrMethod().getMethod().getAnnotation(PerformanceTest.class);
+                if (perfTest != null) {
+                    PerformanceTestHandler.PerformanceResult perfResult = PerformanceTestHandler.stopPerformanceMonitoring(
+                        result.getMethod().getConstructorOrMethod().getMethod());
+                    
+                    if (perfResult != null) {
+                        ReportPortal.emitLog("🚀 Performance Test Results:", "INFO", Calendar.getInstance().getTime());
+                        ReportPortal.emitLog("  - Requests: " + perfResult.getMetrics().getRequestCount(), "INFO", Calendar.getInstance().getTime());
+                        ReportPortal.emitLog("  - Avg Response Time: " + String.format("%.2f", perfResult.getMetrics().getAverageResponseTime()) + "ms", "INFO", Calendar.getInstance().getTime());
+                        ReportPortal.emitLog("  - Max Response Time: " + perfResult.getMetrics().getMaxResponseTime() + "ms", "INFO", Calendar.getInstance().getTime());
+                        ReportPortal.emitLog("  - Throughput: " + String.format("%.2f", perfResult.getMetrics().getThroughput()) + " req/s", "INFO", Calendar.getInstance().getTime());
+                        ReportPortal.emitLog("  - Max CPU Usage: " + String.format("%.2f", perfResult.getMetrics().getMaxCpuUsage()) + "%", "INFO", Calendar.getInstance().getTime());
+                        ReportPortal.emitLog("  - Max Memory Usage: " + perfResult.getMetrics().getMaxMemoryUsage() + "MB", "INFO", Calendar.getInstance().getTime());
+                        
+                        if (!perfResult.isPassed()) {
+                            ReportPortal.emitLog("⚠️ Performance violations detected:", "WARN", Calendar.getInstance().getTime());
+                            for (String violation : perfResult.getViolations()) {
+                                ReportPortal.emitLog("  - " + violation, "WARN", Calendar.getInstance().getTime());
+                            }
+                        } else {
+                            ReportPortal.emitLog("✅ All performance requirements met", "INFO", Calendar.getInstance().getTime());
+                        }
+                    }
+                }
 
                 logger.debug("ReportPortal test success logged for: {}", result.getMethod().getMethodName());
             } catch (Exception e) {
@@ -139,6 +154,83 @@ public class ReportPortalListener extends ReportPortalTestNGListener {
         }
 
         super.onTestSkipped(result);
+    }
+
+    /**
+     * Log annotation information using context
+     */
+    private void logAnnotationInfo(TestAnnotationProcessor.TestExecutionContext context) {
+        // Add test information from annotation
+        if (context.hasTestInfo()) {
+            TestInfo testInfo = context.getTestInfo();
+            ReportPortal.emitLog("Test Description: " + testInfo.description(), "INFO", Calendar.getInstance().getTime());
+            ReportPortal.emitLog("Test Author: " + testInfo.author(), "INFO", Calendar.getInstance().getTime());
+            ReportPortal.emitLog("Test Priority: " + testInfo.priority().name(), "INFO", Calendar.getInstance().getTime());
+
+            if (!testInfo.jiraId().isEmpty()) {
+                ReportPortal.emitLog("JIRA ID: " + testInfo.jiraId(), "INFO", Calendar.getInstance().getTime());
+            }
+
+            if (testInfo.tags().length > 0) {
+                ReportPortal.emitLog("Tags: " + String.join(", ", testInfo.tags()), "INFO", Calendar.getInstance().getTime());
+            }
+        }
+
+        // Add API test information from annotation
+        if (context.hasApiTest()) {
+            ApiTest apiTest = context.getApiTest();
+            ReportPortal.emitLog("API Endpoint: " + apiTest.endpoint(), "INFO", Calendar.getInstance().getTime());
+            ReportPortal.emitLog("HTTP Method: " + apiTest.method(), "INFO", Calendar.getInstance().getTime());
+            ReportPortal.emitLog("Requires Auth: " + apiTest.requiresAuth(), "INFO", Calendar.getInstance().getTime());
+        }
+
+        // Add Performance test information from annotation
+        if (context.hasPerformanceTest()) {
+            PerformanceTest perfTest = context.getPerformanceTest();
+            ReportPortal.emitLog("🚀 Performance Test Configuration:", "INFO", Calendar.getInstance().getTime());
+            ReportPortal.emitLog("  - Max Response Time: " + perfTest.maxResponseTime() + "ms", "INFO", Calendar.getInstance().getTime());
+            ReportPortal.emitLog("  - Concurrent Users: " + perfTest.concurrentUsers(), "INFO", Calendar.getInstance().getTime());
+            ReportPortal.emitLog("  - Test Duration: " + perfTest.duration() + "s", "INFO", Calendar.getInstance().getTime());
+            ReportPortal.emitLog("  - Performance Type: " + perfTest.type().name(), "INFO", Calendar.getInstance().getTime());
+            ReportPortal.emitLog("  - Max CPU Usage: " + perfTest.maxCpuUsage() + "%", "INFO", Calendar.getInstance().getTime());
+            ReportPortal.emitLog("  - Max Memory Usage: " + perfTest.maxMemoryUsage() + "MB", "INFO", Calendar.getInstance().getTime());
+        }
+
+        // Add Security test information from annotation
+        if (context.hasSecurityTest()) {
+            SecurityTest secTest = context.getSecurityTest();
+            ReportPortal.emitLog("🔒 Security Test Configuration:", "INFO", Calendar.getInstance().getTime());
+            ReportPortal.emitLog("  - Security Types: " + java.util.Arrays.toString(secTest.types()), "INFO", Calendar.getInstance().getTime());
+            ReportPortal.emitLog("  - Security Level: " + secTest.level().name(), "INFO", Calendar.getInstance().getTime());
+            ReportPortal.emitLog("  - Sensitive Data: " + secTest.sensitiveData(), "INFO", Calendar.getInstance().getTime());
+            if (secTest.requiredRoles().length > 0) {
+                ReportPortal.emitLog("  - Required Roles: " + java.util.Arrays.toString(secTest.requiredRoles()), "INFO", Calendar.getInstance().getTime());
+            }
+            if (secTest.owaspCategories().length > 0) {
+                ReportPortal.emitLog("  - OWASP Categories: " + java.util.Arrays.toString(secTest.owaspCategories()), "INFO", Calendar.getInstance().getTime());
+            }
+            
+            // Log security requirements
+            if (context.getSecurityValidation() != null && context.getSecurityValidation().hasRequirements()) {
+                ReportPortal.emitLog("🛡️ Security Requirements:", "INFO", Calendar.getInstance().getTime());
+                for (String requirement : context.getSecurityValidation().getRequirements()) {
+                    ReportPortal.emitLog("  - " + requirement, "INFO", Calendar.getInstance().getTime());
+                }
+            }
+        }
+
+        // Add Test Category information from annotation
+        if (context.hasTestCategory()) {
+            TestCategory testCategory = context.getTestCategory();
+            ReportPortal.emitLog("📂 Test Category:", "INFO", Calendar.getInstance().getTime());
+            ReportPortal.emitLog("  - Category: " + testCategory.value().name(), "INFO", Calendar.getInstance().getTime());
+            ReportPortal.emitLog("  - Level: " + testCategory.level().name(), "INFO", Calendar.getInstance().getTime());
+            ReportPortal.emitLog("  - Risk Level: " + testCategory.riskLevel().name(), "INFO", Calendar.getInstance().getTime());
+            ReportPortal.emitLog("  - Environments: " + java.util.Arrays.toString(testCategory.environments()), "INFO", Calendar.getInstance().getTime());
+            if (testCategory.isFlaky()) {
+                ReportPortal.emitLog("  - ⚠️ Marked as Flaky Test", "WARN", Calendar.getInstance().getTime());
+            }
+        }
     }
 
     /**

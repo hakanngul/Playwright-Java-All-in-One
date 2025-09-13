@@ -1,5 +1,17 @@
 package com.starlettech.clients;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.testng.annotations.Listeners;
 
 import com.epam.reportportal.testng.ReportPortalTestNGListener;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -8,30 +20,22 @@ import com.microsoft.playwright.APIRequestContext;
 import com.microsoft.playwright.APIResponse;
 import com.microsoft.playwright.Playwright;
 import com.microsoft.playwright.options.RequestOptions;
-import com.starlettech.core.PlaywrightManager;
+import com.starlettech.managers.PlaywrightManager;
 import com.starlettech.utils.JsonUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.testng.annotations.Listeners;
-
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.util.*;
 
 /**
  * BaseApiClient
  * - Playwright APIRequestContext tabanlı genel HTTP istemcisi
  * - Alt sınıflar spesifik API'ler için buradan kalıtım alır
-
+ * 
  * Özellikler:
- *  - Base URL
- *  - Varsayılan header'lar (+ extra header override)
- *  - Bearer/Basic auth helper
- *  - Timeout
- *  - Retry (basit, idempotent isteklerde önerilir)
- *  - JSON parse yardımcıları
-
+ * - Base URL
+ * - Varsayılan header'lar (+ extra header override)
+ * - Bearer/Basic auth helper
+ * - Timeout
+ * - Retry (basit, idempotent isteklerde önerilir)
+ * - JSON parse yardımcıları
+ * 
  * Not: Playwright RequestOptions map kabul etmez; header'lar tek tek setlenir.
  */
 @Listeners(ReportPortalTestNGListener.class)
@@ -126,8 +130,7 @@ public abstract class BaseApiClient {
             this.api = pw.request().newContext(
                     new APIRequest.NewContextOptions()
                             .setBaseURL(baseUrl)
-                            .setTimeout(defaultTimeoutMs)
-            );
+                            .setTimeout(defaultTimeoutMs));
             logger.debug("API context initialized: baseUrl={}, timeout={}ms", baseUrl, defaultTimeoutMs);
         } catch (Exception e) {
             logger.error("API context init failed: {}", e.getMessage());
@@ -167,7 +170,8 @@ public abstract class BaseApiClient {
 
     /* Overload: ekstra header/timeout ihtiyacı olan çağrılar için */
     protected APIResponse post(String path, Object body, Map<String, String> extraHeaders, Long timeoutMs) {
-        RequestOptions opts = buildJsonRequestOptions(body, extraHeaders, timeoutMs == null ? defaultTimeoutMs : timeoutMs);
+        RequestOptions opts = buildJsonRequestOptions(body, extraHeaders,
+                timeoutMs == null ? defaultTimeoutMs : timeoutMs);
         return executeWithRetry("POST", () -> api.post(path, opts));
     }
 
@@ -175,7 +179,8 @@ public abstract class BaseApiClient {
 
     protected RequestOptions buildJsonRequestOptions(Object body, Map<String, String> extraHeaders, long timeoutMs) {
         Map<String, String> headers = new LinkedHashMap<>(defaultHeaders);
-        if (extraHeaders != null && !extraHeaders.isEmpty()) headers.putAll(extraHeaders);
+        if (extraHeaders != null && !extraHeaders.isEmpty())
+            headers.putAll(extraHeaders);
 
         RequestOptions options = RequestOptions.create();
         headers.forEach(options::setHeader);
@@ -205,16 +210,23 @@ public abstract class BaseApiClient {
                 lastEx = ex;
                 logger.warn("{} attempt {}/{} failed: {}", method, attempt + 1, retries + 1, ex.getMessage());
                 // Bekleme (exponential backoff basit)
-                try { Thread.sleep(retryBackoff.toMillis() * Math.max(1, attempt + 1)); } catch (InterruptedException ignored) {}
+                sleep(retryBackoff.toMillis() * Math.max(1, attempt + 1));
             }
             attempt++;
         }
 
         logger.error("{} failed after {} attempts", method, retries + 1);
-        if (last != null) {
-            logger.error("Last response status: {}", last.status());
+        if (lastEx != null) {
+            logger.error("Last exception: {}", lastEx.getMessage());
         }
         throw (lastEx != null ? lastEx : new RuntimeException(method + " failed"));
+    }
+
+    private void sleep(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException ignored) {
+        }
     }
 
     @FunctionalInterface
@@ -255,13 +267,18 @@ public abstract class BaseApiClient {
     }
 
     private String safeBody(APIResponse resp) {
-        try { return resp.text(); } catch (Exception ignored) { return "<unreadable>"; }
+        try {
+            return resp.text();
+        } catch (Exception ignored) {
+            return "<unreadable>";
+        }
     }
 
     /* ===================== Utils ===================== */
 
     protected String buildUrlWithParams(String path, Map<String, String> params) {
-        if (params == null || params.isEmpty()) return path;
+        if (params == null || params.isEmpty())
+            return path;
         StringBuilder sb = new StringBuilder(path);
         sb.append(path.contains("?") ? "&" : "?");
         Iterator<Map.Entry<String, String>> it = params.entrySet().iterator();
@@ -269,7 +286,8 @@ public abstract class BaseApiClient {
             Map.Entry<String, String> e = it.next();
             sb.append(encode(e.getKey())).append("=")
                     .append(encode(e.getValue()));
-            if (it.hasNext()) sb.append("&");
+            if (it.hasNext())
+                sb.append("&");
         }
         return sb.toString();
     }
@@ -282,11 +300,11 @@ public abstract class BaseApiClient {
         if (logger.isDebugEnabled()) {
             logger.debug("{} {} -> status={} content-type={}",
                     method,
-                    // Playwright APIResponse URL erişimi (bazı sürümlerde .url() var, yoksa loga yazmayabiliriz)
+                    // Playwright APIResponse URL erişimi (bazı sürümlerde .url() var, yoksa loga
+                    // yazmayabiliriz)
                     tryGetUrl(response),
                     response.status(),
-                    response.headers().getOrDefault("content-type", "-")
-            );
+                    response.headers().getOrDefault("content-type", "-"));
         }
         if (logger.isTraceEnabled()) {
             logger.trace("Response body: {}", safeBody(response));
@@ -294,7 +312,11 @@ public abstract class BaseApiClient {
     }
 
     private String tryGetUrl(APIResponse response) {
-        try { return response.url(); } catch (Throwable t) { return "-"; }
+        try {
+            return response.url();
+        } catch (Throwable t) {
+            return "-";
+        }
     }
 
     /* ===================== Lifecycle ===================== */

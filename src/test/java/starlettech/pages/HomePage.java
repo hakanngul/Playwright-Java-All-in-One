@@ -1,6 +1,6 @@
 package starlettech.pages;
 
-import com.starlettech.core.BasePage;
+import com.starlettech.core.base.BasePage;
 
 /**
  * Home Page Object

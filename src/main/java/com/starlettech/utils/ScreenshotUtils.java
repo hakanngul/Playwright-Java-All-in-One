@@ -1,17 +1,18 @@
 package com.starlettech.utils;
 
-import com.microsoft.playwright.Page;
-import com.starlettech.config.TestConfig;
-import com.starlettech.core.PlaywrightManager;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.microsoft.playwright.Page;
+import com.starlettech.config.TestConfig;
+import com.starlettech.managers.PlaywrightManager;
 
 /**
  * Utility class for taking screenshots

@@ -1,4 +1,4 @@
-package com.starlettech.core;
+package com.starlettech.core.base;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,6 +9,7 @@ import com.microsoft.playwright.options.WaitForSelectorState;
 import com.starlettech.config.TestConfig;
 import com.starlettech.exceptions.BrowserException;
 import com.starlettech.exceptions.PageException;
+import com.starlettech.managers.PlaywrightManager;
 import com.starlettech.utils.WaitUtils;
 
 /**

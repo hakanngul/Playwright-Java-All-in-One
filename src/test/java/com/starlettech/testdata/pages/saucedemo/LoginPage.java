@@ -1,7 +1,7 @@
 package com.starlettech.testdata.pages.saucedemo;
 
 import com.starlettech.annotations.Browser;
-import com.starlettech.core.BasePage;
+import com.starlettech.core.base.BasePage;
 import com.starlettech.enums.BrowserType;
 
 /**

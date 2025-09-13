@@ -1,17 +1,29 @@
-package com.starlettech.core;
+package com.starlettech.core.base;
+
+import java.lang.reflect.Method;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.testng.ITestResult;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
 
 import com.starlettech.annotations.Browser;
 import com.starlettech.config.BrowserConfig;
 import com.starlettech.config.TestConfig;
+import com.starlettech.core.ResourceCleanupManager;
+import com.starlettech.core.RetryAnalyzer;
+import com.starlettech.core.TestMetricsCollector;
 import com.starlettech.enums.BrowserType;
+import com.starlettech.managers.DynamicConfigManager;
+import com.starlettech.managers.PlaywrightManager;
+import com.starlettech.managers.ThreadLocalManager;
 import com.starlettech.utils.DatabaseUtils;
 import com.starlettech.utils.ScreenshotUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.testng.ITestResult;
-import org.testng.annotations.*;
-
-import java.lang.reflect.Method;
 
 /**
  * Base Test class for UI tests

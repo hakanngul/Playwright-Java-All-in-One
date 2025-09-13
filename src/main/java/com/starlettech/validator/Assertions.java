@@ -19,7 +19,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microsoft.playwright.APIResponse;
 import com.microsoft.playwright.Page;
-import com.starlettech.core.PlaywrightManager;
+import com.starlettech.managers.PlaywrightManager;
 import com.starlettech.utils.ElementUtils;
 
 /**

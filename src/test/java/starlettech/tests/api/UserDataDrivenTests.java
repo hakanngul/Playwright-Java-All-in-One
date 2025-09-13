@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 
 import com.starlettech.annotations.ApiTest;
 import com.starlettech.annotations.TestInfo;
-import com.starlettech.core.BaseApiTest;
+import com.starlettech.core.base.BaseApiTest;
 import com.starlettech.enums.TestPriority;
 import com.starlettech.utils.DataProviderUtils;
 
